@@ -70,7 +70,7 @@ cp -r Ai-build-for-minecraft/mc-design Ai-build-for-minecraft/mc-build Ai-build-
 
 前置依赖（两个均为开源项目）：
 
-- Minecraft Java 版（已在 1.21.1 完整验证；其余版本理论上可行但未测试），单人世界对局域网开放，并开启作弊；
+- Minecraft Java 版（已在 1.21.1 完整验证；其余版本的方块命名方式可能与高版本不太相同，接口协议可能不兼容minecraft_mcp。），单人世界对局域网开放，并开启作弊；
 - [minecraft-mcp-server](https://github.com/yuniko-software/minecraft-mcp-server)：连接游戏的 MCP 服务，提供 build-blueprint、verify-region、list-schematics 等建造工具；
 - [browser-use](https://github.com/browser-use/browser-use)：浏览器自动化 MCP，网页设计器的打开、操控与截图依赖此项。
 
