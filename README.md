@@ -95,7 +95,7 @@ Ai-build-for-minecraft/
 
 ## 演示
 
-**日式拱门：设计器蓝图与实际建造对比。** 左图为网页设计器中由 AI 摆放的蓝图模型，右图为蓝图写入世界后的实际效果，两者逐方块一致。
+**日式拱门：自建蓝图与Agent实际建造对比。** 左图为网页设计器中由 AI 摆放的蓝图模型，右图为蓝图写入世界后的实际效果，两者逐方块一致。
 
 <p align="center">
   <img src="docs/images/japanese_gate_blueprint.png" width="45%" alt="日式拱门蓝图" />
