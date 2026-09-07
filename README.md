@@ -95,7 +95,24 @@ Ai-build-for-minecraft/
 
 ## 演示
 
-<!-- 将演示截图放入 docs/images/ 目录后，取消下列注释并替换为实际文件名
-![网页体素设计器](docs/images/designer.png)
-![表演模式建造](docs/images/perf_build.png)
--->
+**日式拱门：设计器蓝图与实际建造对比。** 左图为网页设计器中由 AI 摆放的蓝图模型，右图为蓝图写入世界后的实际效果，两者逐方块一致。
+
+<p align="center">
+  <img src="docs/images/japanese_gate_blueprint.png" width="45%" alt="日式拱门蓝图" />
+  <img src="docs/images/japanese_gate_in_game.jpg" width="45%" alt="日式拱门游戏内效果" />
+</p>
+
+**小型宫殿：AI 自主设计与落地微调。** 左图为 AI 通过网页设计器自主建模的过程，右图为建造完成后经差量微调方块材质的游戏内效果。
+
+<p align="center">
+  <img src="docs/images/palace_designer.jpg" width="45%" alt="设计器中的小型宫殿" />
+  <img src="docs/images/palace_in_game.jpg" width="45%" alt="小型宫殿游戏内效果" />
+</p>
+
+**建筑群。** 图中全部建筑均由智能体自主设计并建造完成。
+
+![智能体自主设计建造的建筑群](docs/images/agent_built_village.jpg)
+
+**建造者 XiaoBuddy。** 由 WorkBuddy 驱动的建筑师机器人，正在游戏中接收指令。
+
+![建筑师机器人 XiaoBuddy](docs/images/xiaobuddy.png)
