@@ -70,8 +70,8 @@ cp -r Ai-build-for-minecraft/mc-design Ai-build-for-minecraft/mc-build Ai-build-
 
 前置依赖（两个均为开源项目）：
 
-- Minecraft Java 版（已在 1.21.1 完整验证；其余版本的方块命名方式可能与高版本不太相同，接口协议可能不兼容minecraft_mcp。），单人世界对局域网开放，并开启作弊；
-- [minecraft-mcp-server](https://github.com/yuniko-software/minecraft-mcp-server)：连接游戏的 MCP 服务，提供 build-blueprint、verify-region、list-schematics 等建造工具；
+- Minecraft Java 版（已在 1.21.1 完整验证；其余版本理论上可行但未测试），单人世界对局域网开放，并开启作弊；
+- [minecraft-mcp-server-blueprint](https://github.com/ChenZeLongKnight/minecraft-mcp-server-blueprint)：连接游戏的 MCP 服务，基于 [yuniko-software/minecraft-mcp-server](https://github.com/yuniko-software/minecraft-mcp-server)（Apache License 2.0）扩展而来，新增 build-blueprint、verify-region、list-schematics 等蓝图建造工具；
 - [browser-use](https://github.com/browser-use/browser-use)：浏览器自动化 MCP，网页设计器的打开、操控与截图依赖此项。
 
 ## 目录结构
@@ -95,7 +95,7 @@ Ai-build-for-minecraft/
 
 ## 演示
 
-**日式拱门：自建蓝图与Agent实际建造对比。** 左图为网页设计器中由 AI 摆放的蓝图模型，右图为蓝图写入世界后的实际效果，两者逐方块一致。
+**日式拱门：设计器蓝图与实际建造对比。** 左图为网页设计器中由 AI 摆放的蓝图模型，右图为蓝图写入世界后的实际效果，两者逐方块一致。
 
 <p align="center">
   <img src="docs/images/japanese_gate_blueprint.png" width="45%" alt="日式拱门蓝图" />
