@@ -1,0 +1,14 @@
+# Python 编译缓存
+__pycache__/
+*.py[cod]
+
+# 大模型权重：超出 GitHub 单文件 100 MB 上限，获取方式见 models/README.md
+models/u2net.onnx
+models/*.partial
+
+# 系统与编辑器文件
+.DS_Store
+Thumbs.db
+*.log
+.idea/
+.vscode/

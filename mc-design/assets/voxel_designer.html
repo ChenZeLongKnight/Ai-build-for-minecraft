@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-page-node-id="g68tA6vj1ccArxYY34Y4R6">
-<head data-page-node-id="SBhAx8R9CbUGynL7XUYQ1h">
-<meta charset="UTF-8" data-page-node-id="vA7hZrp8iC7jPzj39j6YF2">
-<meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="P9CcmbEEqqJqDIBe9eX1YC">
+<html lang="zh-CN" data-page-node-id="w86F4EDFjSw8fb5rIUuoEl">
+<head data-page-node-id="QrxwuddIkSa1ZQo8sdDlE3">
+<meta charset="UTF-8" data-page-node-id="8h8Lya4h2pkBYGD8hJxwdv">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="mSpbeqP61mrsVbNAfTpmnW">
 <title>体素蓝图设计器 · Voxel Blueprint Studio</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" data-page-node-id="NhCijEqmwPBmR0AJWTAD64">
-<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=ZCOOL+QingKe+HuangYou&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" data-page-node-id="AJDeCcLoBYNKKKQKwxpcf6">
+<link rel="preconnect" href="https://fonts.googleapis.com" data-page-node-id="iid54CKWhWJMsL4eQ9mGvs">
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=ZCOOL+QingKe+HuangYou&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" data-page-node-id="kpOXXokfqqCXdOLOmiZIqF">
 <style>
   :root{
     --bg:#0e1116; --panel:#171c24; --panel2:#1f2630; --line:#313b49;
@@ -17,7 +17,6 @@
   #app{position:relative;width:100%;height:100%}
   canvas{display:block}
   .panel{background:var(--panel);border:2px solid var(--line);border-radius:10px;box-shadow:0 4px 0 rgba(0,0,0,.35)}
-  /* 顶部工具条 */
   #toolbar{position:absolute;top:14px;left:50%;transform:translateX(-50%);display:flex;gap:8px;padding:8px 10px;z-index:10;align-items:center}
   .tool{font-family:inherit;font-size:17px;letter-spacing:1px;color:var(--dim);background:var(--panel2);border:2px solid var(--line);border-radius:8px;padding:7px 14px;cursor:pointer;display:flex;align-items:center;gap:7px;transition:all .12s}
   .tool .ic{font-family:'Silkscreen',monospace;font-size:12px}
@@ -25,17 +24,22 @@
   .tool.active{color:#0d1208;background:var(--accent);border-color:#7ee07e;box-shadow:0 0 0 2px rgba(91,200,91,.25)}
   .tool.active .ic{color:#0d1208}
   .sep{width:2px;height:26px;background:var(--line);border-radius:2px;margin:0 3px}
-  /* 方块调色板 */
-  #palette{position:absolute;left:14px;top:50%;transform:translateY(-50%);padding:10px;z-index:10;max-height:78vh;overflow-y:auto;width:236px}
-  #palette h3{font-size:16px;letter-spacing:2px;color:var(--accent2);margin-bottom:9px;display:flex;align-items:center;gap:8px}
+  #palette{position:absolute;left:14px;top:50%;transform:translateY(-50%);padding:10px;z-index:10;max-height:82vh;overflow-y:auto;width:248px}
+  #palette h3{font-size:16px;letter-spacing:2px;color:var(--accent2);margin-bottom:9px;display:flex;align-items:center;gap:7px}
   #palette h3 .px{font-family:'Silkscreen',monospace;font-size:10px;color:var(--dim)}
+  #palCount{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dim);font-weight:400}
+  #palToggle{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:2px 8px;cursor:pointer;letter-spacing:0}
+  #palToggle:hover{color:var(--txt);border-color:#6b7c96}
+  #palCats{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
+  .cat{font-family:inherit;font-size:12px;line-height:1.5;padding:2px 8px;border-radius:6px;border:1px solid var(--slot-line);background:var(--slot);color:var(--dim);cursor:pointer;letter-spacing:1px}
+  .cat:hover{color:var(--txt);border-color:#6b7c96}
+  .cat.active{background:var(--accent2);border-color:var(--accent2);color:#0d1208}
   #slots{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
   .slot{aspect-ratio:1;background:var(--slot);border:2px solid var(--slot-line);border-radius:6px;cursor:pointer;position:relative;overflow:hidden;transition:transform .1s}
   .slot:hover{transform:scale(1.08);border-color:#6b7c96;z-index:2}
   .slot.active{border-color:var(--accent2);box-shadow:0 0 0 2px rgba(232,181,58,.3)}
   .slot canvas{width:100%;height:100%;image-rendering:pixelated}
   .slot .nm{position:absolute;left:0;right:0;bottom:0;font-size:10px;line-height:1.3;text-align:center;background:rgba(10,13,18,.72);color:var(--txt);padding:1px 0}
-  /* 右侧信息面板 */
   #hud{position:absolute;right:14px;top:14px;width:252px;padding:12px 14px;z-index:10;font-size:15px}
   #hud h3{font-size:16px;letter-spacing:2px;color:var(--accent2);margin-bottom:8px}
   .row{display:flex;justify-content:space-between;margin:5px 0;color:var(--dim)}
@@ -49,57 +53,56 @@
   .btn.amber:hover{border-color:var(--accent2)}
   .mini{display:flex;gap:7px}
   .mini .btn{margin-top:7px}
-  /* 切片控制 */
   #sliceRow{margin:9px 0 3px;display:none;align-items:center;gap:8px}
   #sliceRow.on{display:flex}
   #sliceY{flex:1;accent-color:var(--accent2)}
   #sliceVal{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent2);min-width:26px;text-align:right}
-  /* 底部提示 */
   #hint{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);padding:8px 18px;font-size:14px;color:var(--dim);z-index:10;letter-spacing:1px}
   #hint b{color:var(--accent)}
   #hint .k{font-family:'Silkscreen',monospace;font-size:10px;background:var(--panel2);border:1px solid var(--line);border-radius:4px;padding:2px 5px;color:var(--txt);margin:0 2px}
-  /* toast */
   #toast{position:absolute;top:70px;left:50%;transform:translateX(-50%);padding:9px 22px;font-size:15px;z-index:20;opacity:0;pointer-events:none;transition:opacity .25s;border-color:var(--accent)}
   #toast.show{opacity:1}
-  /* AI 接口回显面板 */
   #aiOut{position:absolute;right:14px;bottom:14px;width:340px;max-height:180px;overflow-y:auto;padding:9px 12px;z-index:11;font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.55;color:var(--accent);white-space:pre-wrap;word-break:break-all}
   #aiOut::before{content:'AI LINK · window.vd';display:block;font-family:'Silkscreen',monospace;font-size:9px;color:var(--dim);margin-bottom:4px;letter-spacing:1px}
   ::-webkit-scrollbar{width:8px}::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
-  @media (max-width:1100px){#palette{width:200px}#slots{grid-template-columns:repeat(4,1fr)}}
+  @media (max-width:1100px){#palette{width:212px}#slots{grid-template-columns:repeat(4,1fr)}}
 </style>
 </head>
-<body data-page-node-id="Jdd1SpWMEDhzXMV6DfGxzb">
-<div id="app" data-page-node-id="m9314aEu9GDL7R46NDw9Iv">
-  <div id="toolbar" class="panel" data-page-node-id="V91sIxTK4KYOWeCIz8ENEi">
-    <button class="tool active" id="tBuild" data-page-node-id="BB2GwcoACa4Dg1mD1e6Mnm"><span class="ic" data-page-node-id="ay7vMenaO8iqFFbDvCM9Nm">+</span>建造</button>
-    <button class="tool" id="tErase" data-page-node-id="WzvLSVGHybf3Pd5qQ08gs5"><span class="ic" data-page-node-id="CS2MO9rfXBRsbeVvmntHOd">-</span>擦除</button>
-    <button class="tool" id="tRect" data-page-node-id="VgaK9qZIW6xIHvv4MGDaiu"><span class="ic" data-page-node-id="samBrKiptYULNBxwukqPez">▭</span>矩形填充</button>
-    <div class="sep" data-page-node-id="WUiUCqGvGVKqZuG31p3oyU"></div>
-    <button class="tool" id="tUndo" data-page-node-id="sp72Brc7PDXmTbyHuEbJYf"><span class="ic" data-page-node-id="JQHsv87WgMGpivUX1fRrJ4">↺</span>撤销</button>
-    <button class="tool" id="tSlice" data-page-node-id="mSmxkmI5SkRiD49dYaQPSw"><span class="ic" data-page-node-id="UyRDpxeAFvsbR7UOvwymTd">≡</span>切片</button>
+<body data-page-node-id="AIc1UAgrNg1M73HpMNcWLh">
+<div id="app" data-page-node-id="F3fgLSVN9fhcLEzjScCNai">
+  <div id="toolbar" class="panel" data-page-node-id="RiJYwQFwJTNmFW4FC7Q9H0">
+    <button class="tool active" id="tBuild" data-page-node-id="ZpFmJ3cA0uyRVZwlwqn3HO"><span class="ic" data-page-node-id="tGPPQWA0KbuniEhM5cSIjC">+</span>建造</button>
+    <button class="tool" id="tErase" data-page-node-id="Ylas5OHSMNNVg5bHH4yjHF"><span class="ic" data-page-node-id="aA8t9jZPa6eIPdve3vVaOJ">-</span>擦除</button>
+    <button class="tool" id="tRect" data-page-node-id="F7PW2gyu4sZsP8BRkXr5HO"><span class="ic" data-page-node-id="V6MnYFLKaIaneiB55uGTHy">▭</span>矩形填充</button>
+    <div class="sep" data-page-node-id="3sKEbHQ5RecA2T3iQeskNC"></div>
+    <button class="tool" id="tUndo" data-page-node-id="lGYAk9n25EFDikk9vIglPl"><span class="ic" data-page-node-id="Cr0gu0NiDSgMi9KWtrtQQz">↺</span>撤销</button>
+    <button class="tool" id="tSlice" data-page-node-id="VclEKEVOM0etNgo7uMzfuO"><span class="ic" data-page-node-id="uV0yQElpHDRnHQoRNWHAGo">≡</span>切片</button>
   </div>
-  <div id="palette" class="panel" data-page-node-id="aWUKF6wOIzrmeT2xaMH0YT">
-    <h3 data-page-node-id="AcNC0Ev7KurGf0wr8ljgKq"><span class="px" data-page-node-id="cFBJCEKghL1vX1J5kONNzE">BLOCKS</span>方块箱</h3>
-    <div id="slots" data-page-node-id="u5k6Wbf4FVnZRAYfhcmWGu"></div>
-  </div>
-  <div id="hud" class="panel" data-page-node-id="93CFYJDJV8VJI1xcGxd3Hb">
-    <h3 data-page-node-id="QoDLiBSEZBph1fXn6mtpOy"><span style="font-family:'Silkscreen',monospace;font-size:10px;color:var(--dim)" data-page-node-id="8rO8vxKtJ0E9gzDwYBUoaB">BLUEPRINT</span> 蓝图台</h3>
-    <div id="coords" data-page-node-id="cJyCP9WsBxLV6xI9nILXnw">瞄准: (-, -, -)</div>
-    <div class="row" data-page-node-id="ON3jcX9T8Jdh1FjUJYz4Bg"><span data-page-node-id="FDkZa7F0VWPUNXwPP92raD">方块总数</span><b id="cCount" data-page-node-id="GdV9EYEKsjQnETvM9U3Rhc">0</b></div>
-    <div class="row" data-page-node-id="dilZ6kzS2H5UYZbqNh7Uu0"><span data-page-node-id="53BSc1ZPKfyWKRtH2dTetU">蓝图尺寸</span><b id="cSize" data-page-node-id="Igf42n9TomEO4DOMvmILzn">0 × 0 × 0</b></div>
-    <div id="sliceRow" data-page-node-id="cGRGXBABo0lh76FOGBp3xT"><span style="color:var(--dim)" data-page-node-id="qwUl5amcUL1Ae7DOMTS4Kd">Y≤</span><input type="range" id="sliceY" min="0" max="40" value="0" data-page-node-id="dDnEQJWuJsAv9XO9P7HECx"><span id="sliceVal" data-page-node-id="9VSAnNjx9kwynItQMX60ju">0</span></div>
-    <button class="btn green" id="bExport" data-page-node-id="e6miq3Lyv7rGHBCvo2LGGP">⬇ 导出蓝图 JSON</button>
-    <div class="mini" data-page-node-id="uaAXWdIHDwrzr0NsWnBYC8">
-      <button class="btn" id="bImport" data-page-node-id="fcPUZglqzLVtodsZFzgAg0">⬆ 导入</button>
-      <button class="btn amber" id="bShot" data-page-node-id="7hSH8HRMtfMOTZfLN8BJD4">📷 截图</button>
+  <div id="palette" class="panel" data-page-node-id="bFxgzxcm78SZ1pECsk4V1l">
+    <h3 data-page-node-id="pfzEjIkqJnRqSYFo50UZwH"><span class="px" data-page-node-id="NqOsg8dDBauC6R0CJccsIU">BLOCKS</span>方块箱 <span id="palCount" data-page-node-id="y0beK8tIwoKPf7VlEaBelN"></span><button id="palToggle" data-page-node-id="KbAUDOKQtOfAXyTTOxznCm">▾ 收起</button></h3>
+    <div id="palBody" data-page-node-id="Sd0kELYlbrSNYQWcrQVXbl">
+      <div id="palCats" data-page-node-id="2UeXDB08d2IPLkqbwAsKtG"></div>
+      <div id="slots" data-page-node-id="jg7F2zSeu7nAX738AJmaF8"></div>
     </div>
-    <button class="btn" id="bSample" data-page-node-id="6vCjWLCHXG5slDp4fsLtto">示例：中世纪水井</button>
-    <button class="btn" id="bClear" style="border-color:#6b3535;color:#e8a09a" data-page-node-id="ydCrAZXH3AHUgE2UDjKp56">清空画布</button>
   </div>
-  <div id="hint" class="panel" data-page-node-id="sDoWUwLDHdadvw0gCm3DlJ"><b data-page-node-id="rtbzNXhpL5x6TuRhB16XmQ">左键</b> 放置/擦除 · <b data-page-node-id="qJa2FQdv8YywcGBelMj8Ek">右键拖动</b> 旋转视角 · <b data-page-node-id="IAB1HKCZnDECGzgx5ujEVG">中键/滚轮</b> 平移缩放 · <span class="k" data-page-node-id="dy0m0FHD3wCUBy6EWmlTmz">CTRL+Z</span> 撤销 · <span class="k" style="color:var(--accent)">AI</span> 浏览器自动化请调用 <b id="hintApi" style="cursor:pointer">vd.help()</b></div>
-  <div id="toast" class="panel" data-page-node-id="Op0IT4ljKJr7OOhjjwKbbW"></div>
-  <div id="aiOut" class="panel">就绪 — 在浏览器自动化中调用 vd.help() 查看接口</div>
-  <input type="file" id="fileIn" accept=".json" style="display:none" data-page-node-id="aNcDrNvKgjsTRKC7XhtnjF">
+  <div id="hud" class="panel" data-page-node-id="WEe4fIMy3FIlO8bMPjF7gY">
+    <h3 data-page-node-id="PMEMgt45o35BCLxca8kw8X"><span style="font-family:'Silkscreen',monospace;font-size:10px;color:var(--dim)" data-page-node-id="lYFxoMcrgBNF28Xf4Zrrwa">BLUEPRINT</span> 蓝图台</h3>
+    <div id="coords" data-page-node-id="2bd7c8cDNQwyYOaf6QWCar">瞄准: (-, -, -)</div>
+    <div class="row" data-page-node-id="AZmAM3u4Gp5fEc8nZiKSEc"><span data-page-node-id="6xXBQmkHK4z59ZI6yAbLrT">方块总数</span><b id="cCount" data-page-node-id="5JPnkIOxHenCUtAv37HIP4">0</b></div>
+    <div class="row" data-page-node-id="ADJo0Ol8BhDQulI1v0LBgE"><span data-page-node-id="MSYMFtIIxncTmfltZkLRAE">蓝图尺寸</span><b id="cSize" data-page-node-id="COriS2iB8HJTc2yIXqAvem">0 × 0 × 0</b></div>
+    <div id="sliceRow" data-page-node-id="i4ARkehSPagmU9qgMrm3VV"><span style="color:var(--dim)" data-page-node-id="ipLEVmqie6G4Gkjw9pXVlf">Y≤</span><input type="range" id="sliceY" min="0" max="40" value="0" data-page-node-id="cyMbrkWSJMNAojxo6HiE68"><span id="sliceVal" data-page-node-id="rt6I9j3VPaIVCTL58Wa86L">0</span></div>
+    <button class="btn green" id="bExport" data-page-node-id="eE7EpJkVE0toDPpCSEspus">⬇ 导出蓝图 JSON</button>
+    <div class="mini" data-page-node-id="KOWleSOvjMheLku6q7yZKW">
+      <button class="btn" id="bImport" data-page-node-id="KEJLU7OSKPjiZOBGNUmGGT">⬆ 导入</button>
+      <button class="btn amber" id="bShot" data-page-node-id="HT8ZP4bLnH3NCaH7BYfrDj">📷 截图</button>
+    </div>
+    <button class="btn" id="bSample" data-page-node-id="StEHWnmPwIcJQyHLK9ie1i">示例：中世纪水井</button>
+    <button class="btn" id="bClear" style="border-color:#6b3535;color:#e8a09a" data-page-node-id="xc4B1wEffofwZEWSnkmlSq">清空画布</button>
+  </div>
+  <div id="hint" class="panel" data-page-node-id="67XqvxzNSEKR819er6MbAz"><b data-page-node-id="1YMkA8d7KiO0FsZiO2WVg6">左键</b> 放置/擦除 · <b data-page-node-id="UpZGZkMRBMMJ5UfZMatM6p">右键拖动</b> 旋转视角 · <b data-page-node-id="kOCjRSm3xAPAIqkO3v2txx">中键/滚轮</b> 平移缩放 · <span class="k" data-page-node-id="S1hhG7X5h6ZhY3hhkIRVSi">CTRL+Z</span> 撤销 · <span class="k" style="color:var(--accent)" data-page-node-id="2fMXAQy2u2sVbh0GCgCAb4">AI</span> 浏览器自动化请调用 <b id="hintApi" style="cursor:pointer" data-page-node-id="wbFHkGHE22D8aBphl6dcCo">vd.help()</b></div>
+  <div id="toast" class="panel" data-page-node-id="GBw7itvFuwbOq1gx7DWme0"></div>
+  <div id="aiOut" class="panel" data-page-node-id="77WG5uxEahiO8Ai5IZ4w4O">就绪 — 在浏览器自动化中调用 vd.help() 查看接口</div>
+  <input type="file" id="fileIn" accept=".json" style="display:none" data-page-node-id="kAykeFpb9Gl5QTIE9ErZa4">
 </div>
 
 <script src="libs/three.min.js"></script>
@@ -107,7 +110,7 @@
 <script>
 const THREE = window.THREE;
 
-/* ---------------- 方块注册表（程序化 16px 像素纹理） ---------------- */
+/* ================= 纹理工具（程序化 16px 像素纹理） ================= */
 function makeTex(draw){
   const c = document.createElement('canvas'); c.width = c.height = 16;
   const g = c.getContext('2d');
@@ -126,53 +129,304 @@ function noise(g, base, vary, alpha=1){
     g.fillRect(x,y,1,1);
   }
 }
-const BLOCKS = {
-  grass_block:{label:'草方块', mc:'minecraft:grass_block', tex:()=>makeTex(g=>{ noise(g,'#7fb238',.10); g.fillStyle='#79553a'; g.fillRect(0,10,16,6); noise(g,'#79553a',0); for(let x=0;x<16;x++){g.fillStyle='#7fb238';g.fillRect(x,9-(x%3===0?1:0),1,2);} })},
-  dirt:{label:'泥土', mc:'minecraft:dirt', tex:()=>makeTex(g=>noise(g,'#79553a',.13))},
-  stone:{label:'石头', mc:'minecraft:stone', tex:()=>makeTex(g=>noise(g,'#7f7f7f',.09))},
-  cobblestone:{label:'圆石', mc:'minecraft:cobblestone', tex:()=>makeTex(g=>{ noise(g,'#6e6e6e',.05); for(let i=0;i<14;i++){ g.fillStyle=`rgba(${120+Math.random()*40|0},${120+Math.random()*40|0},${120+Math.random()*40|0},.9)`; const s=2+Math.random()*3|0; g.fillRect(Math.random()*14|0,Math.random()*14|0,s,s);} g.strokeStyle='#4c4c4c'; g.strokeRect(0,0,16,16); })},
-  mossy_cobblestone:{label:'苔圆石', mc:'minecraft:mossy_cobblestone', tex:()=>makeTex(g=>{ noise(g,'#5f6e55',.08); for(let i=0;i<10;i++){ g.fillStyle='rgba(90,130,70,.85)'; g.fillRect(Math.random()*13|0,Math.random()*13|0,2+Math.random()*3|0,2);} })},
-  stone_bricks:{label:'石砖', mc:'minecraft:stone_bricks', tex:()=>makeTex(g=>{ noise(g,'#7a7a7a',.06); g.strokeStyle='#565656'; g.lineWidth=1; g.strokeRect(.5,.5,15,15); g.beginPath(); g.moveTo(0,8.5);g.lineTo(16,8.5); g.moveTo(8.5,0);g.lineTo(8.5,8); g.moveTo(4.5,8);g.lineTo(4.5,16); g.moveTo(12.5,8);g.lineTo(12.5,16); g.stroke(); })},
-  oak_planks:{label:'橡木板', mc:'minecraft:oak_planks', tex:()=>makeTex(g=>{ noise(g,'#a8824e',.07); g.strokeStyle='#7d5c33'; for(let y=3;y<16;y+=4){g.beginPath();g.moveTo(0,y+.5);g.lineTo(16,y+.5);g.stroke();} })},
-  spruce_planks:{label:'云杉板', mc:'minecraft:spruce_planks', tex:()=>makeTex(g=>{ noise(g,'#7a5a35',.07); g.strokeStyle='#57402a'; for(let y=3;y<16;y+=4){g.beginPath();g.moveTo(0,y+.5);g.lineTo(16,y+.5);g.stroke();} })},
-  oak_log:{label:'橡木原木', mc:'minecraft:oak_log', tex:()=>makeTex(g=>{ noise(g,'#6b5433',.06); g.strokeStyle='#4e3d24'; for(let x=2;x<16;x+=4){g.beginPath();g.moveTo(x+.5,0);g.lineTo(x+.5,16);g.stroke();} })},
-  spruce_log:{label:'云杉原木', mc:'minecraft:spruce_log', tex:()=>makeTex(g=>{ noise(g,'#4e3a22',.06); g.strokeStyle='#382918'; for(let x=2;x<16;x+=4){g.beginPath();g.moveTo(x+.5,0);g.lineTo(x+.5,16);g.stroke();} })},
-  bricks:{label:'红砖', mc:'minecraft:bricks', tex:()=>makeTex(g=>{ g.fillStyle='#96513d'; g.fillRect(0,0,16,16); g.fillStyle='#b0b0ab'; for(let y=0;y<16;y+=4)g.fillRect(0,y,16,1); for(let y=0;y<16;y+=8){for(let x=(y%8?2:6);x<16;x+=8)g.fillRect(x,y,1,4);} })},
-  sand:{label:'沙子', mc:'minecraft:sand', tex:()=>makeTex(g=>noise(g,'#dbcf9c',.06))},
-  gravel:{label:'沙砾', mc:'minecraft:gravel', tex:()=>makeTex(g=>{ noise(g,'#8a8580',.10); for(let i=0;i<8;i++){g.fillStyle='rgba(60,58,55,.5)';g.fillRect(Math.random()*14|0,Math.random()*14|0,2,2);} })},
-  andesite:{label:'安山岩', mc:'minecraft:andesite', tex:()=>makeTex(g=>noise(g,'#888c8a',.06))},
-  glass:{label:'玻璃', mc:'minecraft:glass', transparent:true, tex:()=>makeTex(g=>{ g.clearRect(0,0,16,16); g.fillStyle='rgba(200,230,240,.16)'; g.fillRect(0,0,16,16); g.strokeStyle='rgba(225,245,250,.85)'; g.strokeRect(.5,.5,15,15); g.fillStyle='rgba(255,255,255,.55)'; g.fillRect(2,2,4,1); g.fillRect(2,3,1,3); })},
-  water:{label:'水', mc:'minecraft:water', transparent:true, tex:()=>makeTex(g=>{ g.fillStyle='rgba(50,100,210,.55)'; g.fillRect(0,0,16,16); g.fillStyle='rgba(120,170,255,.4)'; for(let i=0;i<5;i++)g.fillRect(Math.random()*12|0,Math.random()*14|0,3+Math.random()*3|0,1); })},
-  white_concrete:{label:'白混凝土', mc:'minecraft:white_concrete', tex:()=>makeTex(g=>noise(g,'#cfd5d6',.03))},
-  red_concrete:{label:'红混凝土', mc:'minecraft:red_concrete', tex:()=>makeTex(g=>noise(g,'#a12722',.05))},
-  yellow_concrete:{label:'黄混凝土', mc:'minecraft:yellow_concrete', tex:()=>makeTex(g=>noise(g,'#e5c024',.04))},
-  blue_concrete:{label:'蓝混凝土', mc:'minecraft:blue_concrete', tex:()=>makeTex(g=>noise(g,'#2d48a0',.05))},
-  glowstone:{label:'萤石', mc:'minecraft:glowstone', tex:()=>makeTex(g=>{ noise(g,'#b0893f',.10); for(let i=0;i<8;i++){g.fillStyle='rgba(255,235,160,.95)';g.fillRect(Math.random()*13|0,Math.random()*13|0,2,2);} })},
-  oak_leaves:{label:'橡树树叶', mc:'minecraft:oak_leaves[persistent=true]', transparent:true, tex:()=>makeTex(g=>{ g.clearRect(0,0,16,16); for(let y=0;y<16;y++)for(let x=0;x<16;x++){ g.fillStyle=Math.random()<.82?(Math.random()<.5?'#3e7a1e':'#4c9426'):'rgba(0,0,0,0)'; g.fillRect(x,y,1,1);} })},
-  /* ---- 造型与装饰方块（2026-09-07 扩充；游戏内默认状态：半砖=下半、楼梯朝北、栅栏墙自动连接） ---- */
-  stone_brick_slab:{label:'石砖半砖', mc:'minecraft:stone_brick_slab', transparent:true, tex:()=>makeTex(g=>{ g.clearRect(0,0,16,16); g.drawImage(BLOCKS.stone_bricks.tex().image,0,8,16,8,0,8,16,8); g.fillStyle='rgba(220,225,228,.95)'; g.fillRect(0,8,16,1); })},
-  cobblestone_slab:{label:'圆石半砖', mc:'minecraft:cobblestone_slab', transparent:true, tex:()=>makeTex(g=>{ g.clearRect(0,0,16,16); g.drawImage(BLOCKS.cobblestone.tex().image,0,8,16,8,0,8,16,8); g.fillStyle='rgba(200,200,200,.95)'; g.fillRect(0,8,16,1); })},
-  oak_slab:{label:'橡木半砖', mc:'minecraft:oak_slab', transparent:true, tex:()=>makeTex(g=>{ g.clearRect(0,0,16,16); g.drawImage(BLOCKS.oak_planks.tex().image,0,8,16,8,0,8,16,8); g.fillStyle='rgba(200,170,120,.95)'; g.fillRect(0,8,16,1); })},
-  spruce_slab:{label:'云杉半砖', mc:'minecraft:spruce_slab', transparent:true, tex:()=>makeTex(g=>{ g.clearRect(0,0,16,16); g.drawImage(BLOCKS.spruce_planks.tex().image,0,8,16,8,0,8,16,8); g.fillStyle='rgba(150,115,70,.95)'; g.fillRect(0,8,16,1); })},
-  stone_brick_stairs:{label:'石砖楼梯', mc:'minecraft:stone_brick_stairs', transparent:true, tex:()=>makeTex(g=>{ g.clearRect(0,0,16,16); g.drawImage(BLOCKS.stone_bricks.tex().image,0,8,16,8,0,8,16,8); g.drawImage(BLOCKS.stone_bricks.tex().image,0,0,8,8,0,0,8,8); g.strokeStyle='#4a4a4a'; g.strokeRect(.5,.5,15,15); })},
-  cobblestone_stairs:{label:'圆石楼梯', mc:'minecraft:cobblestone_stairs', transparent:true, tex:()=>makeTex(g=>{ g.clearRect(0,0,16,16); g.drawImage(BLOCKS.cobblestone.tex().image,0,8,16,8,0,8,16,8); g.drawImage(BLOCKS.cobblestone.tex().image,0,0,8,8,0,0,8,8); g.strokeStyle='#3c3c3c'; g.strokeRect(.5,.5,15,15); })},
-  oak_stairs:{label:'橡木楼梯', mc:'minecraft:oak_stairs', transparent:true, tex:()=>makeTex(g=>{ g.clearRect(0,0,16,16); g.drawImage(BLOCKS.oak_planks.tex().image,0,8,16,8,0,8,16,8); g.drawImage(BLOCKS.oak_planks.tex().image,0,0,8,8,0,0,8,8); g.strokeStyle='#6a4e2a'; g.strokeRect(.5,.5,15,15); })},
-  spruce_stairs:{label:'云杉楼梯', mc:'minecraft:spruce_stairs', transparent:true, tex:()=>makeTex(g=>{ g.clearRect(0,0,16,16); g.drawImage(BLOCKS.spruce_planks.tex().image,0,8,16,8,0,8,16,8); g.drawImage(BLOCKS.spruce_planks.tex().image,0,0,8,8,0,0,8,8); g.strokeStyle='#43301c'; g.strokeRect(.5,.5,15,15); })},
-  oak_fence:{label:'橡木栅栏', mc:'minecraft:oak_fence', transparent:true, tex:()=>makeTex(g=>{ g.clearRect(0,0,16,16); g.fillStyle='#9a7748'; g.fillRect(2,0,3,16); g.fillRect(11,0,3,16); g.fillStyle='#b08a55'; g.fillRect(2,0,1,16); g.fillRect(11,0,1,16); g.fillStyle='#8a6a3e'; g.fillRect(0,6,16,4); })},
-  spruce_fence:{label:'云杉栅栏', mc:'minecraft:spruce_fence', transparent:true, tex:()=>makeTex(g=>{ g.clearRect(0,0,16,16); g.fillStyle='#6b4f2e'; g.fillRect(2,0,3,16); g.fillRect(11,0,3,16); g.fillStyle='#7d5e38'; g.fillRect(2,0,1,16); g.fillRect(11,0,1,16); g.fillStyle='#573f24'; g.fillRect(0,6,16,4); })},
-  cobblestone_wall:{label:'圆石墙', mc:'minecraft:cobblestone_wall', transparent:true, tex:()=>makeTex(g=>{ g.clearRect(0,0,16,16); g.drawImage(BLOCKS.cobblestone.tex().image,4,0,8,16,4,0,8,16); g.drawImage(BLOCKS.cobblestone.tex().image,0,0,16,3,0,0,16,3); })},
-  stone_brick_wall:{label:'石砖墙', mc:'minecraft:stone_brick_wall', transparent:true, tex:()=>makeTex(g=>{ g.clearRect(0,0,16,16); g.drawImage(BLOCKS.stone_bricks.tex().image,4,0,8,16,4,0,8,16); g.drawImage(BLOCKS.stone_bricks.tex().image,0,0,16,3,0,0,16,3); })},
-  lantern:{label:'灯笼', mc:'minecraft:lantern', transparent:true, tex:()=>makeTex(g=>{ g.clearRect(0,0,16,16); g.fillStyle='#3a3a3a'; g.fillRect(4,3,8,10); g.fillStyle='#f5c542'; g.fillRect(5,4,6,8); g.fillStyle='#fff0b0'; g.fillRect(6,5,4,6); g.fillStyle='#2a2a2a'; g.fillRect(7,1,2,2); })},
-  potted_poppy:{label:'盆栽虞美人', mc:'minecraft:potted_poppy', transparent:true, tex:()=>makeTex(g=>{ g.clearRect(0,0,16,16); g.fillStyle='#8a5a34'; g.fillRect(5,10,6,5); g.fillStyle='#a06c3e'; g.fillRect(5,10,6,1); g.fillStyle='#3e7a1e'; g.fillRect(7,6,2,4); g.fillStyle='#d0342c'; g.fillRect(6,3,4,3); g.fillStyle='#801f1a'; g.fillRect(7,4,2,1); })},
-  campfire:{label:'营火', mc:'minecraft:campfire', transparent:true, tex:()=>makeTex(g=>{ g.clearRect(0,0,16,16); g.fillStyle='#6b4a28'; g.fillRect(1,11,14,3); g.fillStyle='#54381e'; g.fillRect(1,13,14,2); g.fillStyle='#e88822'; g.fillRect(5,5,6,6); g.fillStyle='#f5c542'; g.fillRect(6,7,4,4); g.fillStyle='#fff0b0'; g.fillRect(7,9,2,2); })},
-  bookshelf:{label:'书架', mc:'minecraft:bookshelf', tex:()=>makeTex(g=>{ g.drawImage(BLOCKS.oak_planks.tex().image,0,0); const cols=['#a03030','#3050a0','#30a050','#a08030','#7040a0']; for(const ry of [2,9]) for(let i=0;i<5;i++){ g.fillStyle=cols[(i+ry)%5]; g.fillRect(1+i*3,ry,2,5);} })},
-  mossy_stone_bricks:{label:'苔石砖', mc:'minecraft:mossy_stone_bricks', tex:()=>makeTex(g=>{ g.drawImage(BLOCKS.stone_bricks.tex().image,0,0); for(let i=0;i<12;i++){ g.fillStyle='rgba(90,130,70,.8)'; g.fillRect(Math.random()*14|0,Math.random()*14|0,2,2);} })},
-  chiseled_stone_bricks:{label:'凿制石砖', mc:'minecraft:chiseled_stone_bricks', tex:()=>makeTex(g=>{ g.drawImage(BLOCKS.stone_bricks.tex().image,0,0); g.strokeStyle='#565656'; g.strokeRect(3.5,3.5,9,9); g.strokeRect(5.5,5.5,5,5); })},
-  polished_andesite:{label:'磨治安山岩', mc:'minecraft:polished_andesite', tex:()=>makeTex(g=>{ noise(g,'#9aa09e',.05); g.strokeStyle='#7e8482'; g.strokeRect(.5,.5,15,15); })},
-  dark_oak_planks:{label:'深色橡木板', mc:'minecraft:dark_oak_planks', tex:()=>makeTex(g=>{ noise(g,'#4a3520',.07); g.strokeStyle='#33240f'; for(let y=3;y<16;y+=4){g.beginPath();g.moveTo(0,y+.5);g.lineTo(16,y+.5);g.stroke();} })},
+function shade(hex, amt){
+  const n = parseInt(hex.slice(1),16);
+  const c = v => Math.max(0, Math.min(255, v));
+  return `rgb(${c((n>>16)+amt)},${c((n>>8&255)+amt)},${c((n&255)+amt)})`;
+}
+function mixHex(h1, h2, t){
+  const a = parseInt(h1.slice(1),16), b = parseInt(h2.slice(1),16);
+  const m = (x,y) => Math.round(x*(1-t)+y*t);
+  return '#' + ((1<<24)|(m((a>>16)&255,(b>>16)&255)<<16)|(m((a>>8)&255,(b>>8)&255)<<8)|m(a&255,b&255)).toString(16).slice(1);
+}
+/* 生成器：solid 纯色 / planks 板材 / log 原木 / brick 砖块 / stoneBrick 石砖 / frame 描边
+   cut 双描边 / cobble 碎石 / leaves 树叶 / stainedGlass 染色玻璃 / grate 格栅 / wool 羊毛 / plant 植物 */
+const T = {
+  solid:(hex,v=.04)=>makeTex(g=>noise(g,hex,v)),
+  planks:(hex,line)=>makeTex(g=>{ noise(g,hex,.06); g.strokeStyle=line; for(let y=3;y<16;y+=4){ g.beginPath(); g.moveTo(0,y+.5); g.lineTo(16,y+.5); g.stroke(); } }),
+  log:(hex,line)=>makeTex(g=>{ noise(g,hex,.06); g.strokeStyle=line; for(let x=2;x<16;x+=4){ g.beginPath(); g.moveTo(x+.5,0); g.lineTo(x+.5,16); g.stroke(); } }),
+  birchLog:()=>makeTex(g=>{ noise(g,'#d7d3c8',.05); g.fillStyle='#2e2e28'; for(let i=0;i<6;i++) g.fillRect(Math.random()*12|0, Math.random()*14|0, 2+Math.random()*2|0, 1); }),
+  brick:(base,mortar)=>makeTex(g=>{ noise(g,base,.05); g.fillStyle=mortar; for(let y=0;y<16;y+=4) g.fillRect(0,y,16,1); for(let y=0;y<16;y+=8){ for(let x=(y%8?2:6);x<16;x+=8) g.fillRect(x,y,1,4); } }),
+  stoneBrick:(base,line)=>makeTex(g=>{ noise(g,base,.06); g.strokeStyle=line; g.lineWidth=1; g.strokeRect(.5,.5,15,15); g.beginPath(); g.moveTo(0,8.5); g.lineTo(16,8.5); g.moveTo(8.5,0); g.lineTo(8.5,8); g.moveTo(4.5,8); g.lineTo(4.5,16); g.moveTo(12.5,8); g.lineTo(12.5,16); g.stroke(); }),
+  frame:(hex,line)=>makeTex(g=>{ noise(g,hex,.05); g.strokeStyle=line; g.strokeRect(.5,.5,15,15); }),
+  cut:(hex,line)=>makeTex(g=>{ noise(g,hex,.04); g.strokeStyle=line; g.strokeRect(1.5,1.5,13,13); g.strokeRect(.5,.5,15,15); }),
+  cobble:(hex)=>makeTex(g=>{ noise(g,hex,.05); for(let i=0;i<14;i++){ g.fillStyle=shade(hex,18+Math.random()*26|0); const s=2+Math.random()*3|0; g.fillRect(Math.random()*13|0,Math.random()*13|0,s,s); } g.strokeStyle=shade(hex,-30); g.strokeRect(0,0,16,16); }),
+  leaves:(c1,c2)=>makeTex(g=>{ g.clearRect(0,0,16,16); for(let y=0;y<16;y++)for(let x=0;x<16;x++){ g.fillStyle=Math.random()<.82?(Math.random()<.5?c1:c2):'rgba(0,0,0,0)'; g.fillRect(x,y,1,1);} }),
+  stainedGlass:(hex)=>makeTex(g=>{ g.clearRect(0,0,16,16); g.globalAlpha=.45; g.fillStyle=hex; g.fillRect(0,0,16,16); g.globalAlpha=.9; g.strokeStyle=hex; g.strokeRect(.5,.5,15,15); g.globalAlpha=1; }),
+  grate:(hex,line)=>makeTex(g=>{ g.clearRect(0,0,16,16); g.fillStyle=hex; for(let i=0;i<16;i+=4){ g.fillRect(i,0,2,16); g.fillRect(0,i,16,2); } g.fillStyle=line; for(let i=2;i<16;i+=4){ g.fillRect(i,2,1,1); g.fillRect(i,10,1,1); g.fillRect(10,i,1,1); g.fillRect(2,i,1,1); } }),
+  wool:(hex)=>makeTex(g=>{ noise(g,hex,.05); for(let i=0;i<10;i++){ g.fillStyle=shade(hex,Math.random()<.5?14:-14); g.fillRect(Math.random()*15|0,Math.random()*15|0,2,1); } }),
+  plant:(o)=>makeTex(g=>{
+    g.clearRect(0,0,16,16);
+    const stem = o.stem||'#3e7a1e';
+    if(o.style==='web'){ g.strokeStyle='rgba(230,235,240,.9)'; g.lineWidth=1; for(let i=0;i<16;i+=3){ g.beginPath(); g.moveTo(0,i+.5); g.lineTo(16,i+.5); g.moveTo(i+.5,0); g.lineTo(i+.5,16); g.stroke(); } g.beginPath(); g.moveTo(0,0); g.lineTo(16,16); g.moveTo(16,0); g.lineTo(0,16); g.stroke(); return; }
+    if(o.style==='grass'||o.style==='fern'){ g.fillStyle=stem; g.fillRect(7,5,2,11); g.fillRect(3,7,2,9); g.fillRect(11,6,2,10); g.fillRect(5,3,2,6); g.fillRect(9,4,2,5); if(o.style==='fern'){ g.fillStyle=shade(stem,-24); g.fillRect(1,10,2,6); g.fillRect(13,9,2,7);} return; }
+    if(o.style==='dead'){ g.fillStyle=o.stem||'#8a5a2e'; g.fillRect(7,6,2,10); g.fillRect(5,4,2,4); g.fillRect(9,3,2,5); g.fillRect(4,8,2,4); g.fillRect(10,7,2,4); g.fillRect(6,2,1,3); return; }
+    if(o.style==='sapling'){ g.fillStyle='#6b5433'; g.fillRect(7,10,2,6); g.fillStyle=o.flower||'#4c9426'; g.fillRect(5,5,6,5); g.fillRect(6,3,4,3); g.fillStyle=shade(o.flower||'#4c9426',-30); g.fillRect(7,7,2,2); return; }
+    g.fillStyle=stem; g.fillRect(7,8,2,8); g.fillRect(5,12,2,2); g.fillRect(9,13,2,2);
+    g.fillStyle=o.flower; g.fillRect(6,4,4,4); g.fillRect(5,5,6,2); g.fillRect(7,3,2,6);
+    g.fillStyle=shade(o.flower,-46); g.fillRect(7,5,2,2);
+  }),
 };
 
-/* ---------------- 场景 ---------------- */
+/* ================= 方块注册表（约 230 种，12 个分类） ================= */
+const CATS = ['全部','自然','石材','木材','混凝土','陶瓦','羊毛','玻璃','金属','铜制','装饰','植物'];
+const BLOCKS = {};
+function reg(id, label, cat, texF, opts){
+  BLOCKS[id] = Object.assign({ label, mc:'minecraft:'+id, cat, tex:(typeof texF==='function'?texF:()=>texF) }, opts||{});
+}
+
+/* ---- 手绘精品纹理（保留自初版） ---- */
+reg('grass_block','草方块','自然', makeTex(g=>{ noise(g,'#7fb238',.10); g.fillStyle='#79553a'; g.fillRect(0,10,16,6); noise(g,'#79553a',0); for(let x=0;x<16;x++){g.fillStyle='#7fb238';g.fillRect(x,9-(x%3===0?1:0),1,2);} }));
+reg('dirt','泥土','自然', makeTex(g=>noise(g,'#79553a',.13)));
+reg('stone','石头','石材', makeTex(g=>noise(g,'#7f7f7f',.09)));
+reg('cobblestone','圆石','石材', makeTex(g=>{ noise(g,'#6e6e6e',.05); for(let i=0;i<14;i++){ g.fillStyle=`rgba(${120+Math.random()*40|0},${120+Math.random()*40|0},${120+Math.random()*40|0},.9)`; const s=2+Math.random()*3|0; g.fillRect(Math.random()*14|0,Math.random()*14|0,s,s);} g.strokeStyle='#4c4c4c'; g.strokeRect(0,0,16,16); }));
+reg('mossy_cobblestone','苔圆石','石材', makeTex(g=>{ noise(g,'#5f6e55',.08); for(let i=0;i<10;i++){ g.fillStyle='rgba(90,130,70,.85)'; g.fillRect(Math.random()*13|0,Math.random()*13|0,2+Math.random()*3|0,2);} }));
+reg('stone_bricks','石砖','石材', makeTex(g=>{ noise(g,'#7a7a7a',.06); g.strokeStyle='#565656'; g.lineWidth=1; g.strokeRect(.5,.5,15,15); g.beginPath(); g.moveTo(0,8.5);g.lineTo(16,8.5); g.moveTo(8.5,0);g.lineTo(8.5,8); g.moveTo(4.5,8);g.lineTo(4.5,16); g.moveTo(12.5,8);g.lineTo(12.5,16); g.stroke(); }));
+reg('bricks','红砖','石材', makeTex(g=>{ g.fillStyle='#96513d'; g.fillRect(0,0,16,16); g.fillStyle='#b0b0ab'; for(let y=0;y<16;y+=4)g.fillRect(0,y,16,1); for(let y=0;y<16;y+=8){for(let x=(y%8?2:6);x<16;x+=8)g.fillRect(x,y,1,4);} }));
+reg('sand','沙子','自然', makeTex(g=>noise(g,'#dbcf9c',.06)));
+reg('gravel','沙砾','自然', makeTex(g=>{ noise(g,'#8a8580',.10); for(let i=0;i<8;i++){g.fillStyle='rgba(60,58,55,.5)';g.fillRect(Math.random()*14|0,Math.random()*14|0,2,2);} }));
+reg('andesite','安山岩','石材', makeTex(g=>noise(g,'#888c8a',.06)));
+reg('glass','玻璃','玻璃', makeTex(g=>{ g.clearRect(0,0,16,16); g.fillStyle='rgba(200,230,240,.16)'; g.fillRect(0,0,16,16); g.strokeStyle='rgba(225,245,250,.85)'; g.strokeRect(.5,.5,15,15); g.fillStyle='rgba(255,255,255,.55)'; g.fillRect(2,2,4,1); g.fillRect(2,3,1,3); }), {transparent:true});
+reg('water','水','自然', makeTex(g=>{ g.fillStyle='rgba(50,100,210,.55)'; g.fillRect(0,0,16,16); g.fillStyle='rgba(120,170,255,.4)'; for(let i=0;i<5;i++)g.fillRect(Math.random()*12|0,Math.random()*14|0,3+Math.random()*3|0,1); }), {transparent:true});
+reg('glowstone','萤石','装饰', makeTex(g=>{ noise(g,'#b0893f',.10); for(let i=0;i<8;i++){g.fillStyle='rgba(255,235,160,.95)';g.fillRect(Math.random()*13|0,Math.random()*13|0,2,2);} }), {glow:'#8a6a2a'});
+reg('oak_leaves','橡树树叶','木材', makeTex(g=>{ g.clearRect(0,0,16,16); for(let y=0;y<16;y++)for(let x=0;x<16;x++){ g.fillStyle=Math.random()<.82?(Math.random()<.5?'#3e7a1e':'#4c9426'):'rgba(0,0,0,0)'; g.fillRect(x,y,1,1);} }), {transparent:true, mc:'minecraft:oak_leaves[persistent=true]'});
+reg('mossy_stone_bricks','苔石砖','石材', ()=>makeTex(g=>{ g.drawImage(BLOCKS.stone_bricks.tex().image,0,0); for(let i=0;i<12;i++){ g.fillStyle='rgba(90,130,70,.8)'; g.fillRect(Math.random()*14|0,Math.random()*14|0,2,2);} }));
+reg('chiseled_stone_bricks','凿制石砖','石材', ()=>makeTex(g=>{ g.drawImage(BLOCKS.stone_bricks.tex().image,0,0); g.strokeStyle='#565656'; g.strokeRect(3.5,3.5,9,9); g.strokeRect(5.5,5.5,5,5); }));
+reg('polished_andesite','磨治安山岩','石材', makeTex(g=>{ noise(g,'#9aa09e',.05); g.strokeStyle='#7e8482'; g.strokeRect(.5,.5,15,15); }));
+reg('bookshelf','书架','木材', ()=>makeTex(g=>{ g.drawImage(BLOCKS.oak_planks.tex().image,0,0); const cols=['#a03030','#3050a0','#30a050','#a08030','#7040a0']; for(const ry of [2,9]) for(let i=0;i<5;i++){ g.fillStyle=cols[(i+ry)%5]; g.fillRect(1+i*3,ry,2,5);} }));
+reg('lantern','灯笼','装饰', makeTex(g=>{ g.clearRect(0,0,16,16); g.fillStyle='#3a3a3a'; g.fillRect(4,3,8,10); g.fillStyle='#f5c542'; g.fillRect(5,4,6,8); g.fillStyle='#fff0b0'; g.fillRect(6,5,4,6); g.fillStyle='#2a2a2a'; g.fillRect(7,1,2,2); }), {transparent:true, shape:'lantern', glow:'#6a4a18'});
+reg('potted_poppy','盆栽虞美人','植物', makeTex(g=>{ g.clearRect(0,0,16,16); g.fillStyle='#8a5a34'; g.fillRect(5,10,6,5); g.fillStyle='#a06c3e'; g.fillRect(5,10,6,1); g.fillStyle='#3e7a1e'; g.fillRect(7,6,2,4); g.fillStyle='#d0342c'; g.fillRect(6,3,4,3); g.fillStyle='#801f1a'; g.fillRect(7,4,2,1); }), {transparent:true, shape:'pot'});
+reg('campfire','营火','装饰', makeTex(g=>{ g.clearRect(0,0,16,16); g.fillStyle='#6b4a28'; g.fillRect(1,11,14,3); g.fillStyle='#54381e'; g.fillRect(1,13,14,2); g.fillStyle='#e88822'; g.fillRect(5,5,6,6); g.fillStyle='#f5c542'; g.fillRect(6,7,4,4); g.fillStyle='#fff0b0'; g.fillRect(7,9,2,2); }), {transparent:true, shape:'campfire'});
+
+/* ---- 石材 ---- */
+reg('smooth_stone','平滑石头','石材', T.solid('#a0a0a0',.03));
+reg('cracked_stone_bricks','裂纹石砖','石材', ()=>makeTex(g=>{ g.drawImage(BLOCKS.stone_bricks.tex().image,0,0); g.strokeStyle='#3e3e3e'; g.beginPath(); g.moveTo(3,2); g.lineTo(7,7); g.lineTo(5,12); g.lineTo(10,15); g.stroke(); }));
+reg('diorite','闪长岩','石材', T.solid('#c8c8c9',.06));
+reg('polished_diorite','磨制闪长岩','石材', T.frame('#c3c3c5','#a8a8ab'));
+reg('granite','花岗岩','石材', T.solid('#9a6b58',.06));
+reg('polished_granite','磨制花岗岩','石材', T.frame('#9b6b59','#7d5445'));
+reg('deepslate','深板岩','石材', T.log('#494a50','#3a3b41'));
+reg('cobbled_deepslate','深板岩圆石','石材', T.cobble('#3f4045'));
+reg('polished_deepslate','磨制深板岩','石材', T.frame('#47484e','#38393f'));
+reg('deepslate_bricks','深板岩砖','石材', T.stoneBrick('#414247','#313238'));
+reg('deepslate_tiles','深板岩瓦','石材', T.stoneBrick('#35363b','#26272c'));
+reg('chiseled_deepslate','凿制深板岩','石材', T.frame('#404146','#2c2d32'));
+reg('tuff','凝灰岩','石材', T.solid('#6d6e64',.07));
+reg('calcite','方解石','石材', T.solid('#dfded7',.03));
+reg('dripstone_block','滴水石块','石材', T.solid('#866b5c',.07));
+reg('blackstone','黑石','石材', T.solid('#2c2529',.06));
+reg('polished_blackstone','磨制黑石','石材', T.frame('#313036','#211f24'));
+reg('polished_blackstone_bricks','磨制黑石砖','石材', T.stoneBrick('#302b32','#211e25'));
+reg('basalt','玄武岩','石材', T.log('#575757','#494949'));
+reg('polished_basalt','磨制玄武岩','石材', T.frame('#5b5b5d','#48484a'));
+reg('netherrack','下界岩','石材', T.solid('#7a3a34',.10));
+reg('nether_bricks','下界砖','石材', T.brick('#2c161a','#1a0c0e'));
+reg('red_nether_bricks','红色下界砖','石材', T.brick('#460a0a','#2a0505'));
+reg('quartz_block','石英块','石材', T.solid('#ece9e2',.02));
+reg('quartz_bricks','石英砖','石材', T.stoneBrick('#ece9e2','#c9c4ba'));
+reg('obsidian','黑曜石','石材', makeTex(g=>{ noise(g,'#1a1024',.08); for(let i=0;i<6;i++){ g.fillStyle='rgba(90,60,140,.55)'; g.fillRect(Math.random()*13|0,Math.random()*13|0,2,2);} }));
+reg('amethyst_block','紫水晶块','石材', makeTex(g=>{ noise(g,'#8663c7',.08); for(let i=0;i<7;i++){ g.fillStyle='rgba(200,175,240,.7)'; g.fillRect(Math.random()*13|0,Math.random()*13|0,2,2);} }));
+reg('end_stone','末地石','石材', T.solid('#dfd8a8',.04));
+reg('end_stone_bricks','末地石砖','石材', T.stoneBrick('#dbe2a6','#b8bd87'));
+reg('purpur_block','紫珀块','石材', T.solid('#a878a8',.05));
+reg('prismarine','海晶石','石材', makeTex(g=>{ noise(g,'#639a8c',.06); g.strokeStyle='#4d7d70'; for(let y=0;y<16;y+=4){g.beginPath();g.moveTo(0,y+.5);g.lineTo(16,y+.5);g.stroke();} }));
+reg('prismarine_bricks','海晶石砖','石材', T.stoneBrick('#63a89a','#4d8578'));
+reg('dark_prismarine','暗海晶石','石材', T.stoneBrick('#33574b','#24423a'));
+reg('mud_bricks','泥砖','石材', T.brick('#88614c','#6b4a38'));
+/* 石材半砖 / 楼梯 / 墙（真实形状渲染，游戏内默认状态：半砖=下半、楼梯朝北） */
+reg('stone_brick_slab','石砖半砖','石材', BLOCKS.stone_bricks.tex, {shape:'slab'});
+reg('cobblestone_slab','圆石半砖','石材', BLOCKS.cobblestone.tex, {shape:'slab'});
+reg('stone_slab','石头半砖','石材', BLOCKS.stone.tex, {shape:'slab'});
+reg('brick_slab','红砖半砖','石材', BLOCKS.bricks.tex, {shape:'slab'});
+reg('deepslate_brick_slab','深板岩砖半砖','石材', BLOCKS.deepslate_bricks.tex, {shape:'slab'});
+reg('stone_brick_stairs','石砖楼梯','石材', BLOCKS.stone_bricks.tex, {shape:'stairs'});
+reg('cobblestone_stairs','圆石楼梯','石材', BLOCKS.cobblestone.tex, {shape:'stairs'});
+reg('stone_stairs','石头楼梯','石材', BLOCKS.stone.tex, {shape:'stairs'});
+reg('brick_stairs','红砖楼梯','石材', BLOCKS.bricks.tex, {shape:'stairs'});
+reg('deepslate_brick_stairs','深板岩砖楼梯','石材', BLOCKS.deepslate_bricks.tex, {shape:'stairs'});
+reg('cobblestone_wall','圆石墙','石材', BLOCKS.cobblestone.tex, {shape:'wall'});
+reg('stone_brick_wall','石砖墙','石材', BLOCKS.stone_bricks.tex, {shape:'wall'});
+reg('brick_wall','红砖墙','石材', BLOCKS.bricks.tex, {shape:'wall'});
+reg('deepslate_brick_wall','深板岩砖墙','石材', BLOCKS.deepslate_bricks.tex, {shape:'wall'});
+reg('blackstone_wall','黑石墙','石材', BLOCKS.blackstone.tex, {shape:'wall'});
+
+/* ---- 木材 ---- */
+reg('oak_planks','橡木板','木材', makeTex(g=>{ noise(g,'#a8824e',.07); g.strokeStyle='#7d5c33'; for(let y=3;y<16;y+=4){g.beginPath();g.moveTo(0,y+.5);g.lineTo(16,y+.5);g.stroke();} }));
+reg('spruce_planks','云杉木板','木材', makeTex(g=>{ noise(g,'#7a5a35',.07); g.strokeStyle='#57402a'; for(let y=3;y<16;y+=4){g.beginPath();g.moveTo(0,y+.5);g.lineTo(16,y+.5);g.stroke();} }));
+reg('dark_oak_planks','深色橡木板','木材', makeTex(g=>{ noise(g,'#4a3520',.07); g.strokeStyle='#33240f'; for(let y=3;y<16;y+=4){g.beginPath();g.moveTo(0,y+.5);g.lineTo(16,y+.5);g.stroke();} }));
+reg('oak_log','橡木原木','木材', makeTex(g=>{ noise(g,'#6b5433',.06); g.strokeStyle='#4e3d24'; for(let x=2;x<16;x+=4){g.beginPath();g.moveTo(x+.5,0);g.lineTo(x+.5,16);g.stroke();} }));
+reg('spruce_log','云杉原木','木材', makeTex(g=>{ noise(g,'#4e3a22',.06); g.strokeStyle='#382918'; for(let x=2;x<16;x+=4){g.beginPath();g.moveTo(x+.5,0);g.lineTo(x+.5,16);g.stroke();} }));
+const WOODS = {
+  oak:['橡木','#a8824e'], spruce:['云杉木','#7a5a35'], birch:['白桦','#d7c185'],
+  jungle:['丛林木','#9a6e4d'], acacia:['金合欢','#ba6337'], dark_oak:['深色橡木','#4a3520'],
+  mangrove:['红树','#6d4030'], cherry:['樱花','#e7c4b6'],
+};
+const BARKS = { oak:['#6b5433','#4e3d24'], spruce:['#4e3a22','#382918'], birch:null, jungle:['#57492c','#3e331f'], acacia:['#67615a','#4e4642'], dark_oak:['#3a2a18','#2a1e10'], mangrove:['#54423a','#3e3029'] };
+for(const [w,[nm,p]] of Object.entries(WOODS)){
+  const line = shade(p,-38);
+  if(!BLOCKS[w+'_planks']) reg(w+'_planks', nm+'木板','木材', T.planks(p,line));
+  if(!BLOCKS[w+'_log']) reg(w+'_log', nm+'原木','木材', BARKS[w]?T.log(BARKS[w][0],BARKS[w][1]):T.birchLog());
+  reg(w+'_slab', nm+'半砖','木材', T.planks(p,line), {shape:'slab'});
+  reg(w+'_stairs', nm+'楼梯','木材', T.planks(p,line), {shape:'stairs'});
+  reg(w+'_fence', nm+'栅栏','木材', T.planks(p,line), {shape:'fence'});
+}
+reg('bamboo_planks','竹木板','木材', T.planks('#c3b455','#9a8c3c'));
+reg('crimson_planks','绯红木板','木材', T.planks('#6a344b','#4a2233'));
+reg('warped_planks','诡异木板','木材', T.planks('#2f7561','#1d5443'));
+const TRAP = { oak:'橡木', spruce:'云杉木', birch:'白桦', dark_oak:'深色橡木' };
+for(const [w,nm] of Object.entries(TRAP)){
+  const base = (BLOCKS[w+'_planks']||BLOCKS.oak_planks).tex;
+  reg(w+'_trapdoor', nm+'活板门','木材', base, {transparent:true, shape:'trapdoor'});
+}
+const LEAF = { spruce:['#4e7a55','#3a6342','云杉'], birch:['#71a74d','#5c8c3c','白桦'], jungle:['#3f9e33','#317a26','丛林'], cherry:['#eba7b7','#d98ba0','樱花'] };
+for(const [w,[c1,c2,nm]] of Object.entries(LEAF))
+  reg(w+'_leaves', nm+'树叶','木材', T.leaves(c1,c2), {transparent:true, mc:'minecraft:'+w+'_leaves[persistent=true]'});
+
+/* ---- 混凝土 / 陶瓦 / 羊毛 / 地毯 / 玻璃（十六色程序生成） ---- */
+const DYE = { white:'#F9FFFE',orange:'#F9801D',magenta:'#C74EBD',light_blue:'#3AB3DA',yellow:'#FED83D',lime:'#80C71F',pink:'#F38BAA',gray:'#474F52',light_gray:'#9D9D97',cyan:'#169C9C',purple:'#8932B8',blue:'#3C44AA',brown:'#835432',green:'#5E7C16',red:'#B02E26',black:'#1D1D21' };
+const CNAME = { white:'白',orange:'橙',magenta:'品红',light_blue:'淡蓝',yellow:'黄',lime:'黄绿',pink:'粉',gray:'灰',light_gray:'淡灰',cyan:'青',purple:'紫',blue:'蓝',brown:'棕',green:'绿',red:'红',black:'黑' };
+const CONC = { white:'#cfd5d6',orange:'#e06101',magenta:'#a9309f',light_blue:'#2489c7',yellow:'#f1af15',lime:'#70b919',pink:'#d5658e',gray:'#3e4447',light_gray:'#8e8e86',cyan:'#157788',purple:'#64209c',blue:'#35399d',brown:'#603b1f',green:'#495b24',red:'#8e2020',black:'#080a0f' };
+const WOOLC = { white:'#e9ecec',orange:'#f07613',magenta:'#bd44b3',light_blue:'#3aafd9',yellow:'#f8c627',lime:'#70b919',pink:'#ed8dac',gray:'#3e4447',light_gray:'#8e8e86',cyan:'#158991',purple:'#792aac',blue:'#35399d',brown:'#724728',green:'#546d1b',red:'#a12722',black:'#141519' };
+for(const [n,hex] of Object.entries(CONC)) reg(n+'_concrete', CNAME[n]+'混凝土','混凝土', T.solid(hex,.03));
+for(const [n,hex] of Object.entries(DYE)) reg(n+'_terracotta', CNAME[n]+'陶瓦','陶瓦', T.solid(mixHex(hex,'#985E43',.62),.05));
+reg('terracotta','陶瓦','陶瓦', T.solid('#985e43',.05));
+for(const [n,hex] of Object.entries(WOOLC)){
+  reg(n+'_wool', CNAME[n]+'羊毛','羊毛', T.wool(hex));
+  reg(n+'_carpet', CNAME[n]+'地毯','羊毛', T.wool(hex), {shape:'carpet'});
+}
+for(const [n,hex] of Object.entries(DYE)) reg(n+'_stained_glass', CNAME[n]+'染色玻璃','玻璃', T.stainedGlass(hex), {transparent:true});
+reg('tinted_glass','遮光玻璃','玻璃', makeTex(g=>{ g.fillStyle='rgba(45,50,62,.82)'; g.fillRect(0,0,16,16); g.strokeStyle='rgba(80,88,105,.9)'; g.strokeRect(.5,.5,15,15); }), {transparent:true});
+reg('glass_pane','玻璃板','玻璃', BLOCKS.glass.tex, {transparent:true, shape:'pane'});
+
+/* ---- 金属与矿石 ---- */
+const METALS = { iron_block:['铁块','#d8d8d8','#a8a8a8'], gold_block:['金块','#f5d13c','#c8a428'], diamond_block:['钻石块','#7ce0e0','#4db8b8'], emerald_block:['绿宝石块','#49d474','#2da050'], lapis_block:['青金石块','#264389','#1a2f66'], netherite_block:['下界合金块','#453f42','#302b2e'], coal_block:['煤炭块','#191919','#0d0d0d'], redstone_block:['红石块','#b01e1e','#7a1010'] };
+for(const [id,[nm,c1,c2]] of Object.entries(METALS)) reg(id, nm,'金属', T.frame(c1,c2));
+reg('iron_bars','铁栏杆','金属', makeTex(g=>{ g.clearRect(0,0,16,16); g.fillStyle='#8b8b8b'; g.fillRect(7,0,2,16); g.fillRect(0,3,16,2); g.fillRect(0,11,16,2); g.fillStyle='#b5b5b5'; g.fillRect(7,0,1,16); }), {transparent:true, shape:'pane'});
+reg('iron_trapdoor','铁活板门','金属', makeTex(g=>{ g.fillStyle='#a8a8a8'; g.fillRect(0,0,16,16); g.strokeStyle='#787878'; g.strokeRect(.5,.5,15,15); g.strokeRect(3.5,3.5,9,9); g.fillStyle='#8e8e8e'; g.fillRect(7,0,2,16); g.fillRect(0,7,16,2); }), {transparent:true, shape:'trapdoor'});
+reg('chain','锁链','金属', makeTex(g=>{ g.clearRect(0,0,16,16); g.fillStyle='#5a5a5a'; g.fillRect(5,0,6,5); g.fillRect(5,8,6,5); g.fillStyle='#8b8b8b'; g.fillRect(6,1,2,3); g.fillRect(6,9,2,3); g.fillStyle='#484848'; g.fillRect(6,5,4,3); g.fillRect(6,13,4,3); }), {transparent:true, shape:'chain'});
+
+/* ---- 铜制（1.21） ---- */
+const COPP = { copper:['铜','#c06843'], exposed:['斑驳的铜','#a87e68'], weathered:['锈蚀的铜','#6e9a75'], oxidized:['氧化的铜','#4d9e87'] };
+for(const [pre,[nm,hex]] of Object.entries(COPP)) reg(pre+'_copper', nm+'块','铜制', T.frame(hex, shade(hex,-32)));
+reg('cut_copper','切制铜块','铜制', T.cut('#c06843','#9a5030'));
+reg('chiseled_copper','凿制铜块','铜制', makeTex(g=>{ noise(g,'#c06843',.05); g.strokeStyle='#9a5030'; g.strokeRect(2.5,2.5,11,11); g.strokeRect(5.5,5.5,5,5); }));
+reg('copper_grate','铜格栅','铜制', T.grate('#b05f3c','#8a4628'), {transparent:true});
+reg('copper_bulb','铜灯','铜制', makeTex(g=>{ noise(g,'#c06843',.05); g.fillStyle='#f5c868'; g.fillRect(4,4,8,8); g.fillStyle='#fff0b0'; g.fillRect(6,6,4,4); g.strokeStyle='#9a5030'; g.strokeRect(3.5,3.5,9,9); }), {glow:'#7a5a28'});
+
+/* ---- 装饰与功能 ---- */
+reg('torch','火把','装饰', makeTex(g=>{ g.clearRect(0,0,16,16); g.fillStyle='#6b4a28'; g.fillRect(7,6,2,10); g.fillStyle='#8a6338'; g.fillRect(7,6,1,10); g.fillStyle='#f5c542'; g.fillRect(7,3,2,3); g.fillStyle='#fff0b0'; g.fillRect(7,3,2,1); }), {transparent:true, shape:'torch', glow:'#7a5a20'});
+reg('soul_torch','灵魂火把','装饰', makeTex(g=>{ g.clearRect(0,0,16,16); g.fillStyle='#5a4a3a'; g.fillRect(7,6,2,10); g.fillStyle='#3ee0e0'; g.fillRect(7,3,2,3); g.fillStyle='#c8fff4'; g.fillRect(7,3,2,1); }), {transparent:true, shape:'torch', glow:'#1e7a7a'});
+reg('redstone_torch','红石火把','装饰', makeTex(g=>{ g.clearRect(0,0,16,16); g.fillStyle='#6b4a28'; g.fillRect(7,6,2,10); g.fillStyle='#e0342c'; g.fillRect(7,3,2,3); g.fillStyle='#ff9a94'; g.fillRect(7,3,2,1); }), {transparent:true, shape:'torch', glow:'#7a1a14'});
+reg('soul_lantern','灵魂灯笼','装饰', makeTex(g=>{ g.clearRect(0,0,16,16); g.fillStyle='#3a3a3a'; g.fillRect(4,3,8,10); g.fillStyle='#2ec8c8'; g.fillRect(5,4,6,8); g.fillStyle='#c8fff4'; g.fillRect(6,5,4,6); g.fillStyle='#2a2a2a'; g.fillRect(7,1,2,2); }), {transparent:true, shape:'lantern', glow:'#1e6a6a'});
+reg('candle','蜡烛','装饰', makeTex(g=>{ g.clearRect(0,0,16,16); g.fillStyle='#e8e4d8'; g.fillRect(6,9,4,7); g.fillStyle='#f8f4e8'; g.fillRect(6,9,1,7); g.fillStyle='#f5c542'; g.fillRect(7,5,2,4); g.fillStyle='#fff0b0'; g.fillRect(7,5,2,2); }), {transparent:true, shape:'candle', glow:'#5a4a20'});
+reg('sea_lantern','海晶灯','装饰', makeTex(g=>{ noise(g,'#cfe4dc',.04); g.fillStyle='#a8d8c8'; g.fillRect(2,2,12,12); g.fillStyle='#e8fff4'; g.fillRect(5,5,6,6); }), {glow:'#5a8a7a'});
+reg('shroomlight','菌光体','装饰', makeTex(g=>{ noise(g,'#e8933c',.08); for(let i=0;i<7;i++){ g.fillStyle='rgba(255,220,150,.9)'; g.fillRect(Math.random()*13|0,Math.random()*13|0,2,2);} }), {glow:'#8a5a20'});
+reg('jack_o_lantern','南瓜灯','装饰', makeTex(g=>{ noise(g,'#c37618',.06); g.fillStyle='#ffd23c'; g.fillRect(3,5,3,3); g.fillRect(10,5,3,3); g.fillRect(5,10,6,3); g.fillStyle='#7a4a10'; g.fillRect(0,0,16,1); }), {glow:'#8a5a18'});
+reg('ladder','梯子','装饰', makeTex(g=>{ g.clearRect(0,0,16,16); g.fillStyle='#9a7748'; g.fillRect(2,0,2,16); g.fillRect(12,0,2,16); g.fillRect(2,3,12,2); g.fillRect(2,11,12,2); g.fillStyle='#b08a55'; g.fillRect(2,0,1,16); g.fillRect(12,0,1,16); }), {transparent:true, shape:'ladder'});
+reg('stone_pressure_plate','石质压力板','装饰', BLOCKS.stone.tex, {shape:'plate'});
+
+/* ---- 植物（交叉面渲染） ---- */
+reg('short_grass','短草','植物', T.plant({style:'grass'}), {transparent:true, shape:'cross'});
+reg('fern','蕨','植物', T.plant({style:'fern'}), {transparent:true, shape:'cross'});
+reg('poppy','虞美人','植物', T.plant({flower:'#d0342c'}), {transparent:true, shape:'cross'});
+reg('dandelion','蒲公英','植物', T.plant({flower:'#f5d13c'}), {transparent:true, shape:'cross'});
+reg('cornflower','矢车菊','植物', T.plant({flower:'#5578d4'}), {transparent:true, shape:'cross'});
+reg('blue_orchid','兰花','植物', T.plant({flower:'#3aafd9'}), {transparent:true, shape:'cross'});
+reg('allium','绒球葱','植物', T.plant({flower:'#c07ad4'}), {transparent:true, shape:'cross'});
+reg('dead_bush','枯灌木','植物', T.plant({style:'dead'}), {transparent:true, shape:'cross'});
+reg('oak_sapling','橡树树苗','植物', T.plant({style:'sapling'}), {transparent:true, shape:'cross'});
+reg('cobweb','蜘蛛网','植物', T.plant({style:'web'}), {transparent:true, shape:'cross'});
+
+/* ---- 自然补充 ---- */
+reg('red_sand','红沙','自然', T.solid('#bf6e21',.05));
+reg('coarse_dirt','砂土','自然', makeTex(g=>{ noise(g,'#79553a',.12); for(let i=0;i<6;i++){ g.fillStyle='#8a7a52'; g.fillRect(Math.random()*13|0,Math.random()*13|0,2,2);} }));
+reg('clay','黏土块','自然', T.solid('#9fa3b3',.04));
+reg('snow_block','雪块','自然', T.solid('#f2fafc',.02));
+reg('ice','冰','自然', makeTex(g=>{ g.fillStyle='rgba(122,173,232,.8)'; g.fillRect(0,0,16,16); g.fillStyle='rgba(210,235,255,.85)'; g.fillRect(2,2,4,1); g.fillRect(3,3,1,3); g.fillRect(9,9,5,1); }), {transparent:true});
+reg('lava','熔岩','自然', makeTex(g=>{ noise(g,'#d45a12',.08); for(let i=0;i<7;i++){ g.fillStyle='#f5a623'; g.fillRect(Math.random()*13|0,Math.random()*13|0,2+Math.random()*2|0,2);} for(let i=0;i<4;i++){ g.fillStyle='#ffd23c'; g.fillRect(Math.random()*13|0,Math.random()*13|0,2,1);} }), {transparent:true, glow:'#8a3a10'});
+reg('sandstone','砂岩','自然', makeTex(g=>{ noise(g,'#d8cba4',.04); g.strokeStyle='#c2b48c'; g.beginPath(); g.moveTo(0,4.5);g.lineTo(16,4.5); g.moveTo(0,11.5);g.lineTo(16,11.5); g.stroke(); }));
+reg('red_sandstone','红砂岩','自然', T.solid('#bf6e21',.05));
+reg('mud','泥巴','自然', T.solid('#3f3a39',.06));
+reg('pumpkin','南瓜','自然', makeTex(g=>{ noise(g,'#c37618',.05); g.strokeStyle='#9a5c10'; for(let x=2;x<16;x+=4){g.beginPath();g.moveTo(x+.5,0);g.lineTo(x+.5,16);g.stroke();} }));
+reg('melon','西瓜','自然', makeTex(g=>{ noise(g,'#74b449',.05); g.strokeStyle='#4c8f22'; for(let x=1;x<16;x+=4){g.beginPath();g.moveTo(x+.5,0);g.lineTo(x+.5,16);g.stroke();} }));
+reg('hay_block','干草块','自然', makeTex(g=>{ noise(g,'#c8a428',.06); g.strokeStyle='#a08018'; for(let y=2;y<16;y+=4){g.beginPath();g.moveTo(0,y+.5);g.lineTo(16,y+.5);g.stroke();} }));
+reg('moss_block','苔藓块','自然', T.solid('#59722e',.07));
+
+/* ================= 形状系统（非整格方块按真实比例渲染） =================
+   全部形状为游戏内默认状态：半砖=下半、楼梯朝北、栅栏/墙无连接、火把落地、灯笼落地。
+   预览仅供参考比例，导出的蓝图仍是方块名，由游戏自行应用默认状态。 */
+const S16 = 1/16;
+const SHAPES = {
+  full:    [[0,0,0,1,1,1]],
+  slab:    [[0,0,0,1,8*S16,1]],
+  stairs:  [[0,0,0,1,8*S16,1],[0,8*S16,0,1,8*S16,8*S16]],
+  fence:   [[6*S16,0,6*S16,4*S16,1,4*S16],[0,6*S16,7*S16,1,3*S16,2*S16],[0,12*S16,7*S16,1,3*S16,2*S16]],
+  wall:    [[4*S16,0,4*S16,8*S16,1,8*S16]],
+  torch:   [[7*S16,0,7*S16,2*S16,10*S16,2*S16]],
+  lantern: [[5*S16,1*S16,5*S16,6*S16,7*S16,6*S16],[7*S16,8*S16,7*S16,2*S16,2*S16,2*S16]],
+  chain:   [[7*S16,0,7*S16,2*S16,1,2*S16]],
+  pane:    [[7*S16,0,0,2*S16,1,1]],
+  carpet:  [[0,0,0,1,1*S16,1]],
+  plate:   [[1*S16,0,1*S16,14*S16,1*S16,14*S16]],
+  trapdoor:[[0,0,0,1,3*S16,1]],
+  candle:  [[7*S16,0,7*S16,2*S16,7*S16,2*S16]],
+  pot:     [[5*S16,0,5*S16,6*S16,6*S16,6*S16],[7*S16,6*S16,7*S16,2*S16,3*S16,2*S16],[6*S16,9*S16,6*S16,4*S16,3*S16,4*S16]],
+  campfire:[[0,4*S16,5*S16,1,3*S16,6*S16],[5*S16,4*S16,0,6*S16,3*S16,1],[6*S16,1*S16,6*S16,4*S16,4*S16,4*S16]],
+  ladder:  [[0,0,0,1,1,2*S16]],
+};
+function mergeGeos(gs){
+  const pos=[],nor=[],uv=[],idx=[]; let off=0;
+  for(const g of gs){
+    const p=g.attributes.position,n=g.attributes.normal,u=g.attributes.uv,ix=g.index;
+    for(let i=0;i<p.count;i++){ pos.push(p.getX(i),p.getY(i),p.getZ(i)); nor.push(n.getX(i),n.getY(i),n.getZ(i)); uv.push(u.getX(i),u.getY(i)); }
+    for(let i=0;i<ix.count;i++) idx.push(ix.getX(i)+off);
+    off+=p.count;
+  }
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
+  g.setAttribute('normal',new THREE.Float32BufferAttribute(nor,3));
+  g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));
+  g.setIndex(idx);
+  return g;
+}
+function crossGeo(){
+  const d=.35;
+  const g=new THREE.BufferGeometry();
+  const v=[-d,0,-d, d,0,d, d,1,d, -d,1,-d,  -d,0,d, d,0,-d, d,1,-d, -d,1,d];
+  const uv=[0,0,1,0,1,1,0,1, 0,0,1,0,1,1,0,1];
+  const idx=[0,1,2,0,2,3, 4,5,6,4,6,7];
+  const nor=new Array(24).fill(0); for(let i=1;i<24;i+=3) nor[i]=1;
+  g.setAttribute('position',new THREE.Float32BufferAttribute(v,3));
+  g.setAttribute('normal',new THREE.Float32BufferAttribute(nor,3));
+  g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));
+  g.setIndex(idx);
+  return g;
+}
+const geoCache = new Map();
+const texCache = new Map();
+function texOf(def){
+  if(!texCache.has(def)) texCache.set(def, typeof def.tex==='function' ? def.tex() : def.tex);
+  return texCache.get(def);
+}
+function unitGeo(id){
+  if(geoCache.has(id)) return geoCache.get(id);
+  const def = BLOCKS[id];
+  let geo;
+  if(def.shape === 'cross'){ geo = crossGeo(); }
+  else {
+    const parts = SHAPES[def.shape || 'full'];
+    const gs = parts.map(p => {
+      const g = new THREE.BoxGeometry(p[3], p[4], p[5]);
+      g.translate(p[0]+p[3]/2-0.5, p[1]+p[4]/2-0.5, p[2]+p[5]/2-0.5);
+      return g;
+    });
+    geo = gs.length===1 ? gs[0] : mergeGeos(gs);
+  }
+  geoCache.set(id, geo);
+  return geo;
+}
+
+/* ================= 场景 ================= */
 const app = document.getElementById('app');
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x87b5e0);
@@ -201,9 +455,7 @@ scene.add(sun);
 const sun2 = new THREE.DirectionalLight(0x9db8e8, .35); sun2.position.set(-20,26,-18); scene.add(sun2);
 
 /* 地面 + 网格 */
-const groundGeo = new THREE.PlaneGeometry(512, 512);
-const groundMat = new THREE.MeshLambertMaterial({ color:0x5f8f45 });
-const ground = new THREE.Mesh(groundGeo, groundMat);
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(512, 512), new THREE.MeshLambertMaterial({ color:0x5f8f45 }));
 ground.rotation.x = -Math.PI/2; ground.position.y = -0.01;
 scene.add(ground);
 const grid = new THREE.GridHelper(96, 96, 0x3e6230, 0x4e7a3c);
@@ -211,19 +463,18 @@ grid.position.y = 0.001; scene.add(grid);
 const grid10 = new THREE.GridHelper(96, 9.6, 0x2c4a22, 0x2c4a22);
 grid10.scale.set(10,1,10); grid10.position.y = 0.002; scene.add(grid10);
 
-/* ---------------- 体素数据 ---------------- */
+/* ================= 体素数据与渲染 ================= */
 const voxels = new Map();               // "x,y,z" -> blockId
 let group = new THREE.Group(); scene.add(group);
-const meshIndex = new Map();            // mcName -> { mesh, keys[] }
+const meshIndex = new Map();            // blockId -> { mesh, keys[] }
 const keyOf = (x,y,z) => x+','+y+','+z;
 
 let sliceOn = false, sliceY = 8;
 function visible(y){ return !sliceOn || y <= sliceY; }
 
-const boxGeo = new THREE.BoxGeometry(1,1,1);
 function rebuild(){
   scene.remove(group);
-  group.traverse(o => { if(o.geometry && o.geometry!==boxGeo) o.geometry.dispose?.(); });
+  group.traverse(o => { if(o.material) o.material.dispose(); });   // 几何体进缓存不释放，仅释放材质
   group = new THREE.Group(); scene.add(group);
   meshIndex.clear();
   const buckets = new Map();
@@ -235,8 +486,15 @@ function rebuild(){
   }
   for(const [id, list] of buckets){
     const def = BLOCKS[id];
-    const mat = new THREE.MeshLambertMaterial({ map:def.tex(), transparent:!!def.transparent, opacity:def.transparent?0.95:1, alphaTest:def.transparent?0.08:0 });
-    const mesh = new THREE.InstancedMesh(boxGeo, mat, list.length);
+    const mat = new THREE.MeshLambertMaterial({
+      map: texOf(def),
+      transparent: !!def.transparent,
+      opacity: def.transparent ? 0.95 : 1,
+      alphaTest: def.transparent ? 0.08 : 0,
+      side: def.shape === 'cross' ? THREE.DoubleSide : THREE.FrontSide,
+    });
+    if(def.glow) mat.emissive = new THREE.Color(def.glow);
+    const mesh = new THREE.InstancedMesh(unitGeo(id), mat, list.length);
     const m = new THREE.Matrix4();
     const keys = [];
     list.forEach(([x,y,z,k], i) => {
@@ -263,7 +521,7 @@ const rectPreview = new THREE.Mesh(
 );
 rectPreview.visible = false; scene.add(rectPreview);
 
-/* ---------------- 交互 ---------------- */
+/* ================= 交互 ================= */
 const raycaster = new THREE.Raycaster();
 const mouseNDC = new THREE.Vector2();
 let tool = 'build';            // build | erase | rect
@@ -303,7 +561,7 @@ function setVoxel(x,y,z,id){
 function applyTool(cell){
   if(!cell) return;
   if(tool === 'build'){
-    const p = cell.place, d = BLOCKS[current].mc;
+    const p = cell.place;
     const rec = setVoxel(p.x, p.y, p.z, current);
     if(rec){ undoStack.push([rec]); rebuild(); }
   } else if(tool === 'erase'){
@@ -338,7 +596,7 @@ function undo(){
   rebuild();
 }
 
-/* ---------------- UI ---------------- */
+/* ================= UI ================= */
 const $ = s => document.querySelector(s);
 function toast(msg){
   const t = $('#toast'); t.textContent = msg; t.classList.add('show');
@@ -354,16 +612,29 @@ $('#tErase').onclick = () => setTool('erase');
 $('#tRect').onclick  = () => setTool('rect');
 $('#tUndo').onclick  = undo;
 
-/* 调色板 */
-const slotCanvases = {};
-{
-  const wrap = $('#slots');
+/* 调色板：分类标签 + 收起按钮 */
+let activeCat = '全部';
+function renderCats(){
+  const wrap = $('#palCats'); wrap.innerHTML = '';
+  const counts = {};
+  for(const d of Object.values(BLOCKS)) counts[d.cat] = (counts[d.cat]||0)+1;
+  for(const c of CATS){
+    if(c !== '全部' && !counts[c]) continue;
+    const b = document.createElement('button');
+    b.className = 'cat' + (c===activeCat?' active':'');
+    b.textContent = c==='全部' ? ('全部 '+Object.keys(BLOCKS).length) : (c+' '+counts[c]);
+    b.onclick = () => { activeCat = c; renderCats(); renderSlots(); };
+    wrap.appendChild(b);
+  }
+}
+function renderSlots(){
+  const wrap = $('#slots'); wrap.innerHTML = '';
   for(const [id, def] of Object.entries(BLOCKS)){
+    if(activeCat !== '全部' && def.cat !== activeCat) continue;
     const d = document.createElement('div');
     d.className = 'slot' + (id===current?' active':'');
-    d.title = def.label; d.dataset.id = id;
-    const cv = def.tex().image; cv.style = 'width:100%;height:100%;image-rendering:pixelated';
-    cv.getContext('2d'); // already drawn
+    d.title = def.label + ' · ' + def.mc; d.dataset.id = id;
+    const cv = texOf(def).image;
     d.appendChild(cv);
     const nm = document.createElement('div'); nm.className='nm'; nm.textContent = def.label;
     d.appendChild(nm);
@@ -376,6 +647,15 @@ const slotCanvases = {};
     wrap.appendChild(d);
   }
 }
+$('#palCount').textContent = Object.keys(BLOCKS).length + ' 种';
+renderCats(); renderSlots();
+$('#palToggle').onclick = () => {
+  const body = $('#palBody');
+  const hidden = body.style.display === 'none';
+  body.style.display = hidden ? '' : 'none';
+  $('#palToggle').textContent = hidden ? '▾ 收起' : '▸ 展开';
+  if(!hidden) toast('方块箱已收起，AI 调色板不受影响（vd.blocks()）');
+};
 
 /* 统计与导出 */
 function updateStats(){
@@ -418,7 +698,6 @@ $('#fileIn').onchange = e => {
 function loadFromData(data){
   const arr = Array.isArray(data) ? data : data.blocks;
   if(!Array.isArray(arr)) throw new Error('不是有效的蓝图 JSON：缺少 blocks 数组');
-  // 清空前推一份可撤销快照
   if(voxels.size){
     const snap = [];
     for(const [k,id] of voxels) snap.push({ k, prev:id, next:null });
@@ -501,7 +780,7 @@ renderer.domElement.addEventListener('pointerup', e => {
   if(e.button !== 0 || !downPos) return;
   const moved = Math.hypot(e.clientX-downPos.x, e.clientY-downPos.y);
   downPos = null;
-  if(moved > 4) return;             // 拖动视为视角操作
+  if(moved > 4) return;
   mouseNDC.set(e.clientX/innerWidth*2-1, -(e.clientY/innerHeight)*2+1);
   applyTool(pick());
 });
@@ -560,7 +839,7 @@ function aiCoords(x,y,z){
 function aiBlockId(id){
   if(id == null) return current;
   const key = String(id).replace('minecraft:','');
-  if(!BLOCKS[key]) throw new Error(`未知方块 "${id}"，可用：vd.blocks()`);
+  if(!BLOCKS[key]) throw new Error(`未知方块 "${id}"，可用：vd.blocks()（共 ${Object.keys(BLOCKS).length} 种）`);
   return key;
 }
 function aiAutoDist(){
@@ -570,23 +849,25 @@ function aiAutoDist(){
 }
 const vd = {};
 vd.help = aiWrap('help', () => ({
-  desc:'体素蓝图设计器 AI 接口。坐标为绝对世界格坐标，y=0 是地面。',
-  flow:'build(list) 摆方块 → view("fit") 调相机 → 截图看效果 → state() 查进度 → export() 导蓝图 JSON 交给建造流水线',
+  desc:'体素蓝图设计器 AI 接口。坐标为绝对世界格坐标，y=0 是地面。调色板约 '+Object.keys(BLOCKS).length+' 种，按分类组织。',
+  flow:'blocks(cat?) 查分类与方块 → build(list) 摆方块 → view("fit") 调相机 → 截图看效果 → state() 查进度 → download() 导蓝图 JSON 交给建造流水线',
+  categories: CATS,
+  shapeNote:'半砖/楼梯/火把/灯笼等非整格方块按真实形状渲染（预览），导出仍为方块名（默认状态）',
   methods:{
     help:'本说明',
-    blocks:'列出可用方块调色板 [{id,label,mc}]',
+    blocks:'blocks(cat?) 列出可用方块 [{id,label,mc,cat,shape}]，cat 可传分类名过滤（如 blocks("混凝土")）',
     select:'select(id) 选中默认方块（后续 place 不带 id 时用它）',
     place:'place(x,y,z,id?) 放一个方块',
     erase:'erase(x,y,z) 擦除一个方块',
     box:'box(x1,y1,z1,x2,y2,z2, id|null) 长方体批量填充；id=null 或 "air" 表示清空该区域',
-    build:'build([[x,y,z,"stone_bricks"],…]) 批量摆放，一次撤销批次、一次重建（效率最高）',
+    build:'build([[x,y,z,"stone_bricks"],…]) 批量摆放，一次撤销批次、一次重建（效率最高）；返回 overwritten=重叠计数',
     voxels:'列出当前全部已放方块 [[x,y,z,"minecraft:…"],…]',
     state:'当前状态：方块数/尺寸/各方块计数/工具/切片/相机',
     undo:'撤销上一步操作',
     clear:'清空画布（自动接口不弹确认框）',
     load:'load(blueprintJSON) 导入蓝图数据（覆盖画布，可撤销）',
-    export:'导出蓝图 JSON（直接 return 给 AI，无需下载文件）',
-    download:'触发浏览器下载 blueprint.json',
+    export:'导出蓝图 JSON（仅元信息核对用；正式交付走 download）',
+    download:'触发浏览器下载 blueprint.json（正式交付通道）',
     view:'view("iso|front|back|left|right|top|fit") 相机预设',
     orbit:'orbit(yawDeg,pitchDeg,dist?,tx?,ty?,tz?) 精确控制相机绕目标旋转',
     slice:'slice(on, y?) 只显示 y≤y 的切片（看建筑内部）',
@@ -594,15 +875,19 @@ vd.help = aiWrap('help', () => ({
     sample:'载入示例：中世纪水井'
   }
 }));
-vd.blocks = aiWrap('blocks', () => ({
-  palette:Object.entries(BLOCKS).map(([id,d]) => ({ id, label:d.label, mc:d.mc })),
-  current
-}));
+vd.blocks = aiWrap('blocks', (cat) => {
+  const all = Object.entries(BLOCKS);
+  const list = (cat && cat !== '全部') ? all.filter(([id,d]) => d.cat === cat) : all;
+  if(cat && cat !== '全部' && !list.length) throw new Error(`未知分类 "${cat}"，可用：${CATS.join(' / ')}`);
+  return { categories:CATS, total:all.length, showing:list.length,
+    palette:list.map(([id,d]) => ({ id, label:d.label, mc:d.mc, cat:d.cat, shape:d.shape||'full' })), current };
+});
 vd.select = aiWrap('select', (id) => {
   current = aiBlockId(id);
   document.querySelectorAll('.slot').forEach(s => s.classList.toggle('active', s.dataset.id === current));
+  if(activeCat !== '全部' && BLOCKS[current].cat !== activeCat){ activeCat = BLOCKS[current].cat; renderCats(); renderSlots(); }
   if(tool === 'erase') setTool('build');
-  return { selected:current, label:BLOCKS[current].label };
+  return { selected:current, label:BLOCKS[current].label, cat:BLOCKS[current].cat };
 });
 vd.place = aiWrap('place', (x,y,z,id) => {
   [x,y,z] = aiCoords(x,y,z);
@@ -675,7 +960,7 @@ vd.state = aiWrap('state', (verbose) => {
     camera:{ pos:camera.position.toArray().map(v=>+v.toFixed(1)), target:controls.target.toArray().map(v=>+v.toFixed(1)) },
     undoDepth:undoStack.length
   };
-  if(verbose === false) delete st.counts;   // build() 内部调用时精简
+  if(verbose === false) delete st.counts;
   return st;
 });
 vd.undo = aiWrap('undo', () => { const before = undoStack.length; undo(); return { undone:before-undoStack.length > 0, undoDepth:undoStack.length, blockCount:voxels.size }; });
@@ -708,9 +993,9 @@ vd.view = aiWrap('view', (preset) => {
     case undefined: case 'fit': case 'iso':
       if(preset === 'fit' || !voxels.size) return { view:preset||'fit', pos:camera.position.toArray().map(v=>+v.toFixed(1)), target:t };
       break;
-    case 'front': return { view:'front', ...aiSetCam(0, d*.25, d, t) };       // 从 +z 看向 -z
+    case 'front': return { view:'front', ...aiSetCam(0, d*.25, d, t) };
     case 'back':  return { view:'back',  ...aiSetCam(0, d*.25, -d, t) };
-    case 'left':  return { view:'left',  ...aiSetCam(-d, d*.25, 0, t) };      // 从 -x 看
+    case 'left':  return { view:'left',  ...aiSetCam(-d, d*.25, 0, t) };
     case 'right': return { view:'right', ...aiSetCam(d, d*.25, 0, t) };
     case 'top':   return { view:'top',   ...aiSetCam(0.001*d, d, 0.001*d, t) };
   }
@@ -744,7 +1029,6 @@ Object.freeze(vd);
 window.vd = vd;
 
 /* 主循环 */
-const hoverMat4 = new THREE.Matrix4();
 function animate(){
   requestAnimationFrame(animate);
   controls.update();
@@ -755,7 +1039,7 @@ function animate(){
     outline.visible = true;
     outline.position.set(c.x+.5, c.y+.5, c.z+.5);
     outline.material.color.set(tool==='erase' ? 0xe06553 : 0xffffff);
-    $('#coords').textContent = `瞄准: (${c.x}, ${c.y}, ${c.z})` + (hit.target?`  [块]`:'  [地]');
+    $('#coords').textContent = `瞄准: (${c.x}, ${c.y}, ${c.z})` + (hit.target?`  [${hoverCell.target?BLOCKS[voxels.get(keyOf(hoverCell.target.x,hoverCell.target.y,hoverCell.target.z))]?.label||'块':'块'}]`:'  [地]');
     if(tool==='rect' && rectA){
       const p = hit.place;
       const x0=Math.min(rectA.x,p.x),x1=Math.max(rectA.x,p.x);
@@ -773,12 +1057,15 @@ function animate(){
 rebuild();
 if(location.hash === '#sample') $('#bSample').click();
 if(location.hash === '#ai'){
-  /* AI 接口自测：select → box → build → erase → state → view → export → undo */
+  /* AI 接口自测：select → box → build（含形状方块）→ erase → state → view → export → undo */
   const log = (...a) => console.log('[vd-selftest]', ...a);
-  log('palette:', vd.blocks().palette.length, '种方块');
+  log('palette:', vd.blocks().total, '种方块 / 分类:', vd.blocks().categories.join(','));
   log(vd.select('oak_planks'));
   log(vd.box(-2,0,-2,2,0,2,'stone_bricks'));
-  log(vd.build([[0,1,0,'oak_log'],[0,2,0,'oak_log'],[1,3,0,'glowstone'],[0,3,1,'glass']]));
+  log(vd.build([[0,1,0,'oak_log'],[0,2,0,'oak_log'],[1,3,0,'glowstone'],[0,3,1,'glass'],
+    [2,1,0,'oak_slab'],[3,1,0,'oak_stairs'],[4,1,0,'torch'],[5,1,0,'lantern'],
+    [6,0,0,'poppy'],[7,0,0,'red_carpet'],[8,0,0,'iron_bars'],[9,0,0,'chain'],
+    [10,0,0,'oak_trapdoor'],[11,0,0,'copper_grate'],[12,0,0,'diamond_block'],[13,0,0,'short_grass']]));
   log(vd.erase(1,3,0));
   log('state:', vd.state());
   log(vd.view('front'));

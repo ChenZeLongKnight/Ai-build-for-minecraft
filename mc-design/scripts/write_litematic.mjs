@@ -46,6 +46,12 @@ export function blueprintToLitematicNbt(bp, name = 'Unnamed', source = '') {
   let { width: W, height: H, length: L } = bp;
   if (!bp.blocks || !bp.blocks.length) throw new Error('蓝图没有体素');
 
+  // 兼容两种体素写法：紧凑数组 [x, y, z, block] 与对象 { x, y, z, block }
+  // （引擎的 build-blueprint 两种都吃，生成器习惯输出数组格式）
+  bp.blocks = bp.blocks.map(b => Array.isArray(b)
+    ? { x: b[0], y: b[1], z: b[2], block: b[3] }
+    : b);
+
   // 自动按体素实际范围扩展尺寸（修改扩建后元数据未同步也不报错）
   for (const b of bp.blocks) {
     if (b.x < 0 || b.y < 0 || b.z < 0) throw new Error(`负坐标体素: ${JSON.stringify(b)}`);
