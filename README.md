@@ -40,7 +40,8 @@ mc-design                     mc-build                      mc-modify
 
 ## 快速开始
 
-环境怎么准备、两种上手方式（让 Agent 带着配置，或自己照清单手动配置），见 [`环境配置.md`](环境配置.md)。安装技能，以 WorkBuddy 为例：
+最简单的方法就是把mc-env skill发给你的agent，让他帮你配好环境，配好后根据你的需求，平行选用design,build和modify三款技能（在workbuddy上你不告诉它，它也会根据你需求选择，可以省略这一步）。如果你想自己感受配置过程，见环境配置.md文件。
+
 
 ```bash
 git clone https://github.com/ChenZeLongKnight/Ai-build-for-minecraft.git
@@ -51,7 +52,7 @@ cp -r Ai-build-for-minecraft/mc-env \
       ~/.workbuddy/skills/
 ```
 
-前置依赖：Minecraft Java 版，单人世界对局域网开放并开启作弊；[minecraft-mcp-server-blueprint](https://github.com/ChenZeLongKnight/minecraft-mcp-server-blueprint) 作为连接游戏的 MCP 引擎，注意必须使用本仓库改造的mcp，官方仓库目前没有蓝图工具；[browser-use](https://github.com/browser-use/browser-use) 浏览器自动化 MCP（重要，但目前大多数主流agent，如workbuddy,zcode都会内置，如果没有则同样可以命令agent自行装配，建议下载到本地，提升设计速度）；图片还原路线另需 Python 3.10 以上与若干依赖包（运行过程中agent会自动帮你装不用担心），模型权重见 [`models/README.md`](models/README.md)，仓库内附轻量版开箱可用。
+前置依赖（可以不看，把mc-env skill发给你的agent）：Minecraft Java 版，单人世界对局域网开放并开启作弊（记得把端口号告诉你的agent）；[minecraft-mcp-server-blueprint](https://github.com/ChenZeLongKnight/minecraft-mcp-server-blueprint) 作为连接游戏的 MCP 引擎，注意必须使用本仓库改造的mcp，官方仓库目前没有蓝图工具；[browser-use](https://github.com/browser-use/browser-use) 浏览器自动化 MCP（重要，但目前大多数主流agent，如workbuddy,zcode都会内置，如果没有则同样可以命令agent自行装配，建议下载到本地，提升设计速度）；图片还原路线另需 Python 3.10 以上与若干依赖包（运行过程中agent会自动帮你装不用担心），模型权重见 [`models/README.md`](models/README.md)，仓库内附轻量版开箱可用。
 
 ## 演示
 
