@@ -23,7 +23,9 @@ mc-design                     mc-build                      mc-modify
 │ JSON 与 litematic│         │                   │          │                  │
 └──────────────────┘         └───────────────────┘          └──────────────────┘
 ```
+## 架构优势
 
+弱依赖ai能力，ai能力可能只会影响建筑审美。在环境配的没问题的前提下，确保所有主流ai都能顺利快速准确完成建造（deepseek,minmax,kimi,glm,doubao,hy3。用不着去请gpt老祖出山）
 
 ## 技能构成
 
