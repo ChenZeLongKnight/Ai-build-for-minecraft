@@ -43,7 +43,6 @@ Minecraft AI 建筑流水线：一组面向 AI Agent 的技能（Skill），使�
 | mc-design | 体素设计与蓝图产出，含自主设计与图片还原两条路线 | 网页设计器、图片转换脚本、write_litematic 脚本 |
 | mc-build | 落地建造与验收 | build-blueprint 工具、perf_build 表演回放、json_to_fills 转换器 |
 | mc-modify | 差量微调 | blueprint_diff 差量计算、replace_material 材质替换 |
-| mc-screenshot | 视觉通道，读取游戏内截图供验收与迭代 | 游戏截图目录读取 |
 
 ## 工作流程
 
@@ -63,8 +62,6 @@ mc-design                     mc-build                      mc-modify
 2. **建造阶段**（mc-build）：默认以秒落模式将蓝图一次性写入世界；用户希望观看过程时，切换为表演模式，由工人机器人按预生成的指令清单走位回放。建造完成后执行 verify-region 逐格回读验收，世界与蓝图完全一致方可通过。
 3. **修改阶段**（mc-modify）：在既有蓝图上执行差量修改，先计算新旧版本的最小变更集，再仅将差异方块写入世界，最后同步蓝图并再次验收。纯材质替换提供一键通道。
 
-建造与修改全程可用 mc-screenshot 读取游戏内 F2 截图，以多模态方式确认实际观感。
-
 ## 核心原则
 
 - **严格遵守蓝图。** 引擎蓝图库中的 JSON 是设计结果的唯一定义，世界中的任何修改都必须回写同步，保证蓝图与实际建筑始终一致。
@@ -74,14 +71,13 @@ mc-design                     mc-build                      mc-modify
 
 ## 安装
 
-将本仓库的技能目录复制到 Agent 的技能目录即可，以 WorkBuddy 为例：
+环境怎么准备、两种上手方式（让 Agent 带着配置，或自己照清单手动配置），见 [`环境配置.md`](环境配置.md)。将本仓库的技能目录复制到 Agent 的技能目录即可，以 WorkBuddy 为例：
 
 ```bash
 git clone https://github.com/ChenZeLongKnight/Ai-build-for-minecraft.git
 cp -r Ai-build-for-minecraft/mc-design \
       Ai-build-for-minecraft/mc-build \
       Ai-build-for-minecraft/mc-modify \
-      Ai-build-for-minecraft/mc-screenshot \
       ~/.workbuddy/skills/
 ```
 
@@ -113,8 +109,6 @@ Ai-build-for-minecraft/
 │   ├── SKILL.md              # 微调流程（微改捷径、三步差量、材质替换）
 │   ├── scripts/              # blueprint_diff、replace_material
 │   └── references/modify.md
-├── mc-screenshot/
-│   └── SKILL.md              # 游戏内 F2 截图通道
 └── models/
     ├── u2netp.onnx           # 图片还原的轻量分割模型
     └── README.md             # 权重说明与完整版下载地址

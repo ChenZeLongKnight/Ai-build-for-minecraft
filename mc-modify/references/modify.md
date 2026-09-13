@@ -62,4 +62,4 @@ for(const b of d.blocks) if(b.x>=2&&b.x<=6&&b.block.startsWith('minecraft:cobble
 
 - mc-design 技能负责产出初始蓝图三件套并写入引擎库，这是微调工作的前提。
 - mc-build 技能负责整体落地或重建（仅当用户明确要求时使用）；其中 verify-region 的物理坑知识与本技能通用。
-- mc-screenshot 技能负责观感终审：修改完成后请用户按 F2 截图。
+- 观感终审由用户完成：修改完成后请用户按 F2 截图，以多模态方式查看确认实际观感。
