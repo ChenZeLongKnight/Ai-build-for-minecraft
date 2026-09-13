@@ -27,7 +27,18 @@ description: Minecraft AI 建筑流水线的环境配置与体检。第一次使
 
 ### 第三项，蓝图引擎
 
-确定引擎目录，规则如下。优先读取环境变量 `MC_BUILD_HOME`；未设置时检查默认目录 `D:/mcserver` 是否存在且含有 `schematics` 子目录与 `dist` 目录；两者都不可用时，向用户询问引擎安装位置，这是全流程唯一一次询问。引擎目录确定后，若 `schematics` 子目录不存在则自动创建。随后检查引擎完整性：`dist/main.js` 与 `dist/tools/schematic-tools.js` 存在、`node_modules` 中能找到 `prismarine-nbt`。引擎尚未克隆构建时，给出克隆与构建的具体命令，见仓库 minecraft-mcp-server-blueprint 的说明。
+确定引擎目录，规则如下。优先读取环境变量 `MC_BUILD_HOME`；未设置时检查默认目录 `D:/mcserver` 是否存在且含有 `schematics` 子目录与 `dist` 目录；两者都不可用时，向用户询问引擎安装位置，这是全流程唯一一次询问。引擎目录确定后，若 `schematics` 子目录不存在则自动创建。随后检查引擎完整性：`dist/main.js` 与 `dist/tools/schematic-tools.js` 存在、`node_modules` 中能找到 `prismarine-nbt`。
+
+引擎尚未克隆构建时，必须使用下面这个改造版仓库，不要下载官方原版。官方 yuniko-software/minecraft-mcp-server 没有蓝图建造工具，build-blueprint 与 verify-region 均不存在，装了也无法配合本套技能使用：
+
+```bash
+git clone https://github.com/ChenZeLongKnight/minecraft-mcp-server-blueprint.git
+cd minecraft-mcp-server-blueprint
+npm install
+npm run build
+```
+
+构建完成后回到第三项开头，继续确定引擎目录。
 
 ### 第四项，MCP 连接
 

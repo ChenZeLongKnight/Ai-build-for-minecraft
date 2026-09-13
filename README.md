@@ -95,7 +95,7 @@ cp -r Ai-build-for-minecraft/mc-env \
 前置依赖（均为开源项目）：
 
 - Minecraft Java 版（已在 1.21.1 完整验证；其余版本理论上可行但未测试），单人世界对局域网开放，并开启作弊；
-- [minecraft-mcp-server-blueprint](https://github.com/ChenZeLongKnight/minecraft-mcp-server-blueprint)：连接游戏的 MCP 服务，基于 [yuniko-software/minecraft-mcp-server](https://github.com/yuniko-software/minecraft-mcp-server)（Apache License 2.0）扩展而来，新增 build-blueprint、verify-region、list-schematics 等蓝图建造工具；
+- [minecraft-mcp-server-blueprint](https://github.com/ChenZeLongKnight/minecraft-mcp-server-blueprint)：连接游戏的 MCP 服务，基于 [yuniko-software/minecraft-mcp-server](https://github.com/yuniko-software/minecraft-mcp-server)（Apache License 2.0）扩展而来，新增 build-blueprint、verify-region、list-schematics 等蓝图建造工具。注意必须使用本仓库，不要安装官方原版，原版没有蓝图工具，无法配合本套技能使用；
 - [browser-use](https://github.com/browser-use/browser-use)：浏览器自动化 MCP，网页设计器的打开、操控与截图依赖此项；
 - Python 3.10 以上，仅在图片还原路线下需要，依赖 `numpy`、`Pillow`、`scipy`、`onnxruntime` 四个包。
 
