@@ -1,6 +1,6 @@
 # Ai-build-for-minecraft
 
-Minecraft AI 建筑流水线：一组面向 AI Agent 的技能（Skill），使智能体能够在 Minecraft Java 版中自主完成建筑的体素设计、落地建造与后续微调。全部操作通过 minecraft-mcp-server 提供的 MCP 工具连接游戏，蓝图文件（JSON 与 litematic）作为唯一数据源，贯穿设计、建造、修改三个阶段。
+Minecraft AI 建筑流水线：一组面向 AI Agent 的技能（Skill），使智能体能够在 Minecraft Java 版中自主完成建筑的体素设计、落地建造与后续微调。首次使用请先运行 mc-env 技能完成环境配置。全部操作通过 minecraft-mcp-server 提供的 MCP 工具连接游戏，蓝图文件（JSON 与 litematic）作为唯一数据源，贯穿设计、建造、修改三个阶段。
 
 ## 设计输入的三种方式
 
@@ -40,13 +40,16 @@ Minecraft AI 建筑流水线：一组面向 AI Agent 的技能（Skill），使�
 
 | 技能 | 职责 | 核心工具 |
 |------|------|----------|
+| mc-env | 环境配置与体检，第一次使用时先执行 | 逐项检查脚本、引擎目录自动解析 |
 | mc-design | 体素设计与蓝图产出，含自主设计与图片还原两条路线 | 网页设计器、图片转换脚本、write_litematic 脚本 |
 | mc-build | 落地建造与验收 | build-blueprint 工具、perf_build 表演回放、json_to_fills 转换器 |
 | mc-modify | 差量微调 | blueprint_diff 差量计算、replace_material 材质替换 |
 
+mc-env 是整个套件的入口，其余三个技能平行协作。第一次使用时先触发 mc-env 完成环境配置，之后设计、建造、修改三个技能按工作流衔接。
+
 ## 工作流程
 
-建造环节的三个技能按顺序衔接，形成单向数据流：
+第一次使用时先触发 mc-env 完成环境配置与体检。建造环节的三个技能按顺序衔接，形成单向数据流：
 
 ```
 mc-design                     mc-build                      mc-modify
@@ -71,11 +74,12 @@ mc-design                     mc-build                      mc-modify
 
 ## 安装
 
-环境怎么准备、两种上手方式（让 Agent 带着配置，或自己照清单手动配置），见 [`环境配置.md`](环境配置.md)。将本仓库的技能目录复制到 Agent 的技能目录即可，以 WorkBuddy 为例：
+环境怎么准备、两种上手方式（让 Agent 带着配置，或自己照清单手动配置），见 [`环境配置.md`](环境配置.md)。安装技能后，先对 Agent 说"配置环境"触发 mc-env，通过体检后再使用其余技能。安装方式如下，以 WorkBuddy 为例：
 
 ```bash
 git clone https://github.com/ChenZeLongKnight/Ai-build-for-minecraft.git
-cp -r Ai-build-for-minecraft/mc-design \
+cp -r Ai-build-for-minecraft/mc-env \
+      Ai-build-for-minecraft/mc-design \
       Ai-build-for-minecraft/mc-build \
       Ai-build-for-minecraft/mc-modify \
       ~/.workbuddy/skills/
@@ -96,6 +100,8 @@ cp -r Ai-build-for-minecraft/mc-design \
 
 ```
 Ai-build-for-minecraft/
+├── mc-env/
+│   └── SKILL.md              # 环境配置与体检（第一次使用先执行）
 ├── mc-design/
 │   ├── SKILL.md              # 使用说明书（自主设计、图片还原两条路线）
 │   ├── assets/voxel_designer.html   # 网页体素设计器
