@@ -37,5 +37,6 @@ while (i < sorted.length) {
 }
 
 const outPath = outArg || path.join(path.dirname(inPath), path.basename(inPath).replace(/\.json$/i, '') + '_fills.txt');
+fs.mkdirSync(path.dirname(path.resolve(outPath)), { recursive: true });
 fs.writeFileSync(outPath, lines.join('\n') + '\n');
 console.log(`已写入 ${outPath}: ${lines.length} 条指令（${blocks.length} 方块，origin ${OX} ${OY} ${OZ}）`);

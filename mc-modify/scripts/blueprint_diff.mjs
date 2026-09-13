@@ -4,6 +4,7 @@
 //   新增/修改 → 直接放目标方块；删除 → block 为 minecraft:air
 //   blocks 数组可直接内联喂 MCP build-blueprint（origin 传原建筑的 originX/Y/Z）
 import fs from 'fs';
+import path from 'path';
 
 const [oldPath, newPath, outPath] = process.argv.slice(2);
 if (!oldPath || !newPath) {
@@ -33,7 +34,7 @@ for (const k of oldMap.keys()) {
 
 const patch = { add, change, remove, total: blocks.length, blocks };
 const text = JSON.stringify(patch, null, 1);
-if (outPath) { fs.writeFileSync(outPath, text); console.log(`patch 已写入 ${outPath}`); }
+if (outPath) { fs.mkdirSync(path.dirname(path.resolve(outPath)), { recursive: true }); fs.writeFileSync(outPath, text); console.log(`patch 已写入 ${outPath}`); }
 else console.log(text);
 console.log(`差量汇总: 新增 ${add} | 修改 ${change} | 删除 ${remove} | 共 ${blocks.length} 格`);
 console.log(`应用: MCP build-blueprint 传 blocks=<patch.blocks>、origin=原建筑的 originX/Y/Z，随后 verify-region 验收`);

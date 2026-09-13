@@ -16,5 +16,6 @@ if (!src || !out) { console.error('用法: node convert_litematic.mjs <input> <o
 
 const bp = await loadBlueprintFileAsync(src);
 console.log(`尺寸 ${bp.width}x${bp.height}x${bp.length}, 非空方块 ${bp.blocks.length}`);
+fs.mkdirSync(path.dirname(path.resolve(out)), { recursive: true });
 fs.writeFileSync(out, JSON.stringify({ width: bp.width, height: bp.height, length: bp.length, source: bp.source, blocks: bp.blocks }, null, 1));
 console.log('written:', out);

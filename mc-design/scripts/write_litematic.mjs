@@ -135,6 +135,7 @@ export function blueprintToLitematicNbt(bp, name = 'Unnamed', source = '') {
 export function writeLitematicFile(bp, outPath, name) {
   const { nbt } = blueprintToLitematicNbt(bp, name);
   const buf = zlib.gzipSync(writeUncompressed(nbt));
+  fs.mkdirSync(path.dirname(path.resolve(outPath)), { recursive: true });
   fs.writeFileSync(outPath, buf);
   return buf.length;
 }
@@ -159,6 +160,7 @@ if (invokedDirectly) {
   const bp = JSON.parse(fs.readFileSync(inPath, 'utf8'));
   const { nbt, width, height, length } = blueprintToLitematicNbt(bp, name || 'Unnamed', inPath);
   const buf = zlib.gzipSync(writeUncompressed(nbt));
+  fs.mkdirSync(path.dirname(path.resolve(outPath)), { recursive: true });
   fs.writeFileSync(outPath, buf);
   console.log(`已写入 ${outPath} (${buf.length} bytes): ${width}x${height}x${length}, ${bp.blocks.length} 方块`);
 }
