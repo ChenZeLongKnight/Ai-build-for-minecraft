@@ -6,8 +6,8 @@ img2blueprint.py — 图片 → Minecraft 蓝图 JSON（直接喂 build-blueprin
   python img2blueprint.py <图片> --width 160 [--name foo] [--dither floyd|none]
 
 输出:
-  D:/mcserver/schematics/<name>.json     蓝图，可直接 build-blueprint 落地
-  D:/work/minecraft/_img2bp/<name>_preview.png   方块配色预览
+  <ENGINE>/schematics/<name>.json     蓝图，可直接 build-blueprint 落地（ENGINE 取环境变量 MC_BUILD_HOME，默认 D:/mcserver）
+  ~/img2blueprint/<name>_preview.png  方块配色预览（环境变量 IMG2BP_OUTDIR 可覆盖）
 """
 import os
 import sys
@@ -19,8 +19,8 @@ import numpy as np
 from PIL import Image
 from scipy.spatial import cKDTree
 
-ENGINE = r'D:/mcserver'
-OUTDIR = r'D:/work/minecraft/_img2bp'
+ENGINE = os.environ.get('MC_BUILD_HOME', r'D:/mcserver')
+OUTDIR = os.environ.get('IMG2BP_OUTDIR', os.path.join(os.path.expanduser('~'), 'img2blueprint'))
 
 # ---------- 调色板（1.21.x 原版方块的平均色，sRGB） ----------
 PALETTE = {

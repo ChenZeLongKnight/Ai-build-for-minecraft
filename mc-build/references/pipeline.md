@@ -25,7 +25,7 @@
 
 ## MCP 服务端（引擎）运维
 
-- 正式引擎位于 `D:\mcserver`（源码克隆自 yuniko-software/minecraft-mcp-server v2.0.4 的分支，并附加自研的 schematic-tools 模块）；`D:\work\minecraft\mcserver` 是开发副本，修改代码应改正式引擎，或改完开发副本后重新复制。
+- 引擎目录由环境变量 `MC_BUILD_HOME` 指定（默认 `D:/mcserver`），源码克隆自 yuniko-software/minecraft-mcp-server v2.0.4 的分支，并附加自研的 schematic-tools 模块；若另建了开发副本，修改代码应改正式引擎，或改完开发副本后重新复制。
 - 构建命令为 `npx tsc -p tsconfig.build.json`（tsconfig.json 仅用于类型检查，不产出文件）。
 - 修改源码后，运行中的 MCP 进程仍持有旧代码，必须开启新会话才会生效；过渡期间可使用 scripts/convert_litematic.mjs 桥接。
 - 新版 litematic 的兼容修复位于 parseLitematic 函数，同时支持 BlockStatePalette 列表与 Palette 映射两种格式。

@@ -33,7 +33,7 @@ from img2blueprint import (NAMES, PAL_RGB, srgb_to_lab, resample, quantize,
                            render, auto_bg_mask, grow_bg_mask, saturate,
                            ENGINE, OUTDIR)
 
-MODEL_DIR = os.environ.get('SUBJECT_MODEL_DIR', r'C:/Users/ASUS/.workbuddy/models')
+MODEL_DIR = os.environ.get('SUBJECT_MODEL_DIR', os.path.expanduser('~/.workbuddy/models'))
 # 文件名 → 期望体积(MB)：顺序即质量优先级，同档取第一个完好可用的
 MODEL_CANDIDATES = [
     ('u2net.onnx', 168.0),

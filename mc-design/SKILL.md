@@ -12,7 +12,7 @@ description: Minecraft 蓝图设计阶段，分自主设计与图片还原两类
 
 ## 通用约定
 
-1. 引擎目录在下文中以 `<ENGINE>` 表示，其取值来自环境变量 `MC_BUILD_HOME`，默认值为 `D:/mcserver`。执行 Node 脚本时统一使用 `C:/Users/ASUS/.workbuddy/binaries/node/versions/22.22.2-2/node.exe`。
+1. 引擎目录在下文中以 `<ENGINE>` 表示，其取值来自环境变量 `MC_BUILD_HOME`，默认值为 `D:/mcserver`。执行 Node 脚本时统一使用本机已安装的 Node.js（版本不低于 20.10.0）。
 2. 两类任务产出的是同一套文件，统一以 `<名字>` 为前缀写入 `<ENGINE>/schematics/`：`<名字>.json` 是蓝图主文件（必需），内容为 `{width,height,length,blocks:[{x,y,z,block}]}`，坐标相对蓝图原点；`<名字>.litematic` 是存档文件（推荐），Litematica 模组可直接打开；`<名字>_fills.txt` 是 /fill 指令清单（按需生成），每行一条指令。
 3. 深度参考资料位于本技能的 references 目录；本文件正文只描述流程与决策逻辑，全部可执行命令集中列于末尾的「命令速查」一节。
 

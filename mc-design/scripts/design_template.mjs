@@ -9,11 +9,14 @@
 //    不要手写 'file:///' 前缀（Windows 盘符路径 C:/ 开头不是合法 ESM URL）
 // 2. 产物直接写引擎库，build-blueprint/verify-region/perf_build 无需再手动 cp
 import path from 'path';
-import { pathToFileURL } from 'url';
+import { pathToFileURL, fileURLToPath } from 'url';
 import fs from 'fs';
 
 const ENGINE = process.env.MC_BUILD_HOME || 'D:/mcserver';
-const SKILL_SCRIPTS = 'C:/Users/ASUS/.workbuddy/skills/mc-design/scripts'; // 模板被复制到任何目录都能找到兄弟脚本
+// 兄弟脚本目录：模板放在技能 scripts 目录内运行时自动解析；
+// 把模板复制到其他目录使用时，通过环境变量 MC_DESIGN_SCRIPTS 指定技能的 scripts 目录
+const SKILL_SCRIPTS = process.env.MC_DESIGN_SCRIPTS
+  || path.dirname(fileURLToPath(import.meta.url));
 const { writeLitematicFile } = await import(
   pathToFileURL(path.join(SKILL_SCRIPTS, 'write_litematic.mjs')).href
 );

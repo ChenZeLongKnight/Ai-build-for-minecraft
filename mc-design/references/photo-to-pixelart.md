@@ -4,7 +4,7 @@
 
 ## 运行前提
 
-三个转换脚本都依赖 numpy 与 Pillow，照片脚本另外需要 scipy 与 onnxruntime；若不满足，安装到隔离虚拟环境即可，不要污染系统环境。显著性分割的权重放在 `C:/Users/ASUS/.workbuddy/models/`（路径可用环境变量 `SUBJECT_MODEL_DIR` 覆盖），脚本按体积校验与加载自检自动挑选完好的一个，无需手工指定；权重缺失时脚本会打印下载地址。
+三个转换脚本都依赖 numpy 与 Pillow，照片脚本另外需要 scipy 与 onnxruntime；若不满足，安装到隔离虚拟环境即可，不要污染系统环境。显著性分割的权重放在 `~/.workbuddy/models/`（路径可用环境变量 `SUBJECT_MODEL_DIR` 覆盖），脚本按体积校验与加载自检自动挑选完好的一个，无需手工指定；权重缺失时脚本会打印下载地址。
 
 ## 必须由人给出的两个参数
 
