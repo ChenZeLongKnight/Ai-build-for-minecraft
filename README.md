@@ -1,6 +1,6 @@
 # Ai-build-for-minecraft
 
-Minecraft AI 建筑流水线：一组面向 AI Agent 的技能（Skill），使智能体能够在 Minecraft Java 版中自主完成建筑的体素设计、落地建造与后续微调。首次使用请先运行 mc-env 技能完成环境配置。全部操作通过 minecraft-mcp-server 提供的 MCP 工具连接游戏，蓝图文件（JSON 与 litematic）作为唯一数据源，贯穿设计、建造、修改三个阶段。
+Minecraft AI 建筑流水线：一组面向 AI Agent 的技能（Skill），使智能体能够在 Minecraft Java 版中自主完成建筑的体素设计、落地建造与后续微调。**首次使用请先运行 mc-env 技能完成环境配置。** 全部操作通过 minecraft-mcp-server 提供的 MCP 工具连接游戏，蓝图文件（JSON 与 litematic）作为唯一数据源，贯穿设计、建造、修改三个阶段。
 
 ## 设计输入的三种方式
 
@@ -44,6 +44,13 @@ Minecraft AI 建筑流水线：一组面向 AI Agent 的技能（Skill），使�
 | mc-design | 体素设计与蓝图产出，含自主设计与图片还原两条路线 | 网页设计器、图片转换脚本、write_litematic 脚本 |
 | mc-build | 落地建造与验收 | build-blueprint 工具、perf_build 表演回放、json_to_fills 转换器 |
 | mc-modify | 差量微调 | blueprint_diff 差量计算、replace_material 材质替换 |
+
+四个技能的简介如下：
+
+- **mc-env**：套件的入口，负责环境的配置与体检。首次使用时由 agent 逐项检查运行条件，自动完成路径解析与目录创建，最后输出体检报告；环境出现异常时也可以用它来排查。
+- **mc-design**：负责设计的起点。可以让 AI 在网页体素设计器中从零建模，可以转换既有的建模文件，也可以把照片与像素图还原成蓝图，三种方式产出同一格式的蓝图。
+- **mc-build**：负责把蓝图变成建筑。默认以秒落模式一次性写入世界，也可以切换为表演模式，由工人机器人回放建造过程，建造完成后逐方块回读验收。
+- **mc-modify**：负责建成后的调整。只计算新旧蓝图之间的最小变更集并写入差异方块，材质替换提供一键通道，不做整体重建。
 
 mc-env 是整个套件的入口，其余三个技能平行协作。第一次使用时先触发 mc-env 完成环境配置，之后设计、建造、修改三个技能按工作流衔接。
 
