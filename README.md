@@ -84,3 +84,8 @@ cp -r Ai-build-for-minecraft/mc-env \
   <img src="docs/images/cat_image_restore_in_game.jpg" width="45%" alt="照片还原的猫在游戏内的效果" />
   <img src="docs/images/cat_image_restore_source.jpg" width="45%" alt="原始猫照片" />
 </p>
+
+**RLCraft 冰火双龙。** 照片还原路线的大体量挑战：冰龙与火龙分列左右，展翅对峙，下方配立体 RLCraft 字样，由图片逐格配色生成蓝图后建造入世界。
+
+![RLCraft 冰火双龙](docs/images/rlcraft_dragons.jpg)
+
