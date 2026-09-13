@@ -1,6 +1,6 @@
 # Ai-build-for-minecraft
 
-对 AI 说"帮我设计一座日式拱门"，它在三维体素设计器中自己建模；说"建"，蓝图落进你的世界；说"屋顶换个材质"，它只动需要动的方块。你负责提需求和看效果，其余全部交给 agent。
+本技能主要设计给想在Minecraft中建一些东西，但总是碍于自己的精力或者动手能力不强而没办法真的做出来的“准”建筑党，同时也可以成为想要制作大规模建筑乃至建筑群的建筑党的超级提效工具。
 
 具体来说，它能做三件事：
 
@@ -32,8 +32,8 @@ mc-design                     mc-build                      mc-modify
 |------|------|
 | mc-env | 环境配置与体检，第一次使用时先执行 |
 | mc-design | 体素设计与蓝图产出，含自主设计与图片还原两条路线 |
-| mc-build | 落地建造与验收 |
-| mc-modify | 差量微调 |
+| mc-build | 建造与验收 |
+| mc-modify | 微调建筑 |
 
 每个技能目录内的 SKILL.md 是完整说明书，设计器的 AI 接口、转换脚本的用法、建造与验收的细则、差量计算的规则等全部细节都在里面。
 
@@ -50,7 +50,7 @@ cp -r Ai-build-for-minecraft/mc-env \
       ~/.workbuddy/skills/
 ```
 
-前置依赖：Minecraft Java 版（已在 1.21.1 完整验证），单人世界对局域网开放并开启作弊；[minecraft-mcp-server-blueprint](https://github.com/ChenZeLongKnight/minecraft-mcp-server-blueprint) 作为连接游戏的 MCP 引擎，注意必须使用本仓库，不要安装官方原版，原版没有蓝图工具；[browser-use](https://github.com/browser-use/browser-use) 浏览器自动化 MCP；图片还原路线另需 Python 3.10 以上与若干依赖包，模型权重见 [`models/README.md`](models/README.md)，仓库内附轻量版开箱可用。
+前置依赖：Minecraft Java 版，单人世界对局域网开放并开启作弊；[minecraft-mcp-server-blueprint](https://github.com/ChenZeLongKnight/minecraft-mcp-server-blueprint) 作为连接游戏的 MCP 引擎，注意必须使用本仓库，不要安装官方原版，原版没有蓝图工具；[browser-use](https://github.com/browser-use/browser-use) 浏览器自动化 MCP；图片还原路线另需 Python 3.10 以上与若干依赖包(agent会自动帮你装不用担心)，模型权重见 [`models/README.md`](models/README.md)，仓库内附轻量版开箱可用。
 
 ## 演示
 
